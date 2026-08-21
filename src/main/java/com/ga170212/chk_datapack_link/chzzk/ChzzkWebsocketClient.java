@@ -1,5 +1,6 @@
 package com.ga170212.chk_datapack_link.chzzk;
 
+import net.minecraft.network.chat.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,12 +67,12 @@ public class ChzzkWebsocketClient implements WebSocket.Listener {
 
                 HttpResponse<String> liveStatusResp = httpClient.send(liveStatusReq, HttpResponse.BodyHandlers.ofString());
                 if (liveStatusResp.statusCode() != 200) {
-                    throw new RuntimeException("라이브 상태 조회 실패 (HTTP " + liveStatusResp.statusCode() + ")");
+                    throw new RuntimeException(Component.translatable("error.chk-datapack-link.fetch_channel_failed").getString() + " (HTTP " + liveStatusResp.statusCode() + ")");
                 }
 
                 String chatChannelId = extractJsonValue(liveStatusResp.body(), "chatChannelId");
                 if (chatChannelId == null || chatChannelId.isEmpty()) {
-                    throw new RuntimeException("채팅 채널 ID (chatChannelId)를 가져오지 못했습니다. (방송 중이 아니거나 채널 ID 오류)");
+                    throw new RuntimeException(Component.translatable("error.chk-datapack-link.fetch_channel_failed").getString());
                 }
 
                 LOGGER.info("Acquired chatChannelId: {}", chatChannelId);
@@ -85,12 +86,12 @@ public class ChzzkWebsocketClient implements WebSocket.Listener {
 
                 HttpResponse<String> tokenResp = httpClient.send(tokenReq, HttpResponse.BodyHandlers.ofString());
                 if (tokenResp.statusCode() != 200) {
-                    throw new RuntimeException("Access Token 조회 실패 (HTTP " + tokenResp.statusCode() + ")");
+                    throw new RuntimeException(Component.translatable("error.chk-datapack-link.fetch_token_failed", tokenResp.statusCode()).getString());
                 }
 
                 String accessToken = extractJsonValue(tokenResp.body(), "accessToken");
                 if (accessToken == null || accessToken.isEmpty()) {
-                    throw new RuntimeException("Access Token 응답이 올바르지 않습니다.");
+                    throw new RuntimeException(Component.translatable("error.chk-datapack-link.token_invalid").getString());
                 }
 
                 LOGGER.info("Acquired accessToken for chatChannelId: {}", chatChannelId);

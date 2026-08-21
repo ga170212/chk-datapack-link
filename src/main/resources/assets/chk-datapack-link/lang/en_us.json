@@ -24,10 +24,14 @@
   "command.chk-datapack-link.testchat.success": "§a[Test] Sent simulated chat to Minecraft storage: %s",
   "command.chk-datapack-link.testdonation.success": "§a[Test] Sent simulated %s KRW donation: %s",
 
-  "chat.chk-datapack-link.connect_success": "§a[Chzzk Mod] Successfully connected to Chzzk stream chat!",
-  "chat.chk-datapack-link.connect_failed": "§c[Chzzk Mod] Connection failed: %s",
-  "chat.chk-datapack-link.disconnect_success": "§c[Chzzk Mod] Connection disconnected safely.",
+  "chat.chk-datapack-link.connect_success": "§a[ChkLink] Successfully connected to Chzzk stream chat!",
+  "chat.chk-datapack-link.connect_failed": "§c[ChkLink] Connection failed: %s",
+  "chat.chk-datapack-link.disconnect_success": "§c[ChkLink] Connection disconnected safely.",
 
   "error.chk-datapack-link.no_channel_id": "No Chzzk Channel ID configured.",
-  "error.chk-datapack-link.already_connected": "Already connected to Chzzk."
+  "error.chk-datapack-link.already_connected": "Already connected to Chzzk.",
+  "error.chk-datapack-link.fetch_channel_failed": "Failed to fetch chat channel ID (Please verify channel ID)",
+  "error.chk-datapack-link.fetch_token_failed": "Failed to fetch access token (HTTP %s)",
+  "error.chk-datapack-link.token_invalid": "Invalid access token response.",
+  "error.chk-datapack-link.ws_failed": "WebSocket connection failed: %s"
 }
