@@ -1,1 +1,1 @@
-$tellraw @a [{"text":"$(sender)","color":"yellow"},{"text":": "},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}]
+$tellraw @a [{"text":"$(sender_nick)","color":"yellow"},{"text":": "},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}]

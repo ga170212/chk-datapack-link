@@ -12,6 +12,7 @@
 - **📡 실시간 웹소켓 연동**: 방송이 켜져 있지 않아도 채팅방 웹소켓(`WSS`)에 연결되어 채팅 및 후원 패킷을 실시간 수신합니다.
 - **📦 NBT 스토리지 자동 저장**: 수신된 데이터를 `minecraft:chat` 및 `minecraft:donation` 스토리지에 즉시 NBT 형태로 저장합니다.
 - **🏷️ 펑션 태그 기반 다중 데이터팩 실행**: 스토리지 갱신 후 `#chklink:chat` 및 `#chklink:donation` 태그에 등록된 모든 데이터팩 펑션을 매크로(`with storage`)로 일괄 실행합니다.
+- **👥 멀티플레이어 개별 세션 지원**: 서버에 접속한 각 플레이어가 본인의 치지직 채널 ID로 각자 연동할 수 있으며, 데이터팩에서 `$(player_name)`으로 대상을 지정할 수 있습니다.
 - **🧹 이모티콘 태그 정제 & !명령어 분리**:
   - `{:d_108:}` 형태의 치지직 구독 이모티콘 태그 자동 제거
   - `!투표 강아지` ➔ `cmd: "투표"`, `chat: "강아지"` 자동 분리
@@ -67,13 +68,14 @@
 
 ### 1. 펑션 태그 등록하기
 
-데이터팩 안에 아래 경로로 태그 JSON 파일을 생성하여 실행할 함수를 등록합니다:
+데이터팩 안에 아래 경로로 태그 JSON 파일을 생성하여 실행할 함수들을 등록합니다:
 
 #### 💬 채팅 태그: `data/chklink/tags/function/chat.json`
 ```json
 {
   "values": [
-    "chklink:example_chat"
+    "chklink:example_chat",
+    "chklink:example_chat2"
   ]
 }
 ```
@@ -82,7 +84,8 @@
 ```json
 {
   "values": [
-    "chklink:example_donation"
+    "chklink:example_donation",
+    "chklink:example_donation2"
   ]
 }
 ```
@@ -94,25 +97,29 @@
 #### 💬 `minecraft:chat` 스토리지
 ```snbt
 {
-  cmd: "투표",          // !명령어 명칭 (예: !투표 강아지 -> "투표")
-  chat: "강아지",        // 실제 메시지 내용 (명령어 제외 텍스트)
-  sender: "시청자닉네임", // 보낸 사람 닉네임
-  raw_msg: "!투표 강아지", // 원본 전체 메시지
-  user_id: "a1b2c3...", // 유저 ID 해시값
-  time: 1724123456789L  // 메시지 타임스탬프 (밀리초)
+  player_name: "플레이어닉네임", // 방송 연동을 켠 마인크래프트 플레이어 이름
+  player_uuid: "12345678-...", // 마인크래프트 플레이어 UUID
+  cmd: "투표",                // !명령어 명칭 (예: !투표 강아지 -> "투표")
+  chat: "강아지",              // 실제 메시지 내용 (명령어 제외 텍스트)
+  sender_nick: "시청자닉네임",  // 치지직 시청자(보낸 사람) 닉네임
+  sender_id: "a1b2c3...",     // 치지직 시청자 고유 ID 해시값
+  raw_msg: "!투표 강아지",      // 원본 전체 메시지
+  time: 1724123456789L        // 메시지 타임스탬프 (밀리초)
 }
 ```
 
 #### 🧀 `minecraft:donation` 스토리지
 ```snbt
 {
-  cmd: "미션",          // !명령어 명칭
-  chat: "다이아 10개 캐기", // 후원 메시지 내용
-  amount: 10000,        // 후원 금액 (치즈 개수 / 원)
-  sender: "후원자닉네임", // 후원자 닉네임
-  pay_type: "CHEESE",   // 결제 타입 (CHEESE 등)
+  player_name: "플레이어닉네임", // 방송 연동을 켠 마인크래프트 플레이어 이름
+  player_uuid: "12345678-...", // 마인크래프트 플레이어 UUID
+  cmd: "미션",                // !명령어 명칭
+  chat: "다이아 10개 캐기",     // 후원 메시지 내용
+  amount: 10000,              // 후원 금액 (치즈 개수 / 원)
+  sender_nick: "후원자닉네임",  // 후원자 닉네임
+  sender_id: "a1b2c3...",     // 치지직 후원자 고유 ID 해시값
+  pay_type: "CHEESE",         // 결제 타입 (CHEESE 등)
   raw_msg: "!미션 다이아 10개 캐기",
-  user_id: "a1b2c3...",
   time: 1724123456789L
 }
 ```
@@ -121,24 +128,29 @@
 
 ### 3. 매크로 펑션 작성 예시
 
-#### 📄 `data/chklink/function/example_chat.mcfunction`
+#### 💬 채팅 예제 (1): `data/chklink/function/example_chat.mcfunction`
 ```mcfunction
 # 1. 채팅 출력
-$tellraw @a [{"text":"$(sender)","color":"yellow"},{"text":": "},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}]
-
-# 2. 특정 !명령어 감지 예시 (!다이아, !점프 등)
-execute if data storage minecraft:chat {cmd:"다이아"} run give @a diamond 1
-execute if data storage minecraft:chat {cmd:"점프"} run effect give @a jump_boost 5 2
+$tellraw @a [{"text":"$(sender_nick)","color":"yellow"},{"text":": "},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}]
 ```
 
-#### 📄 `data/chklink/function/example_donation.mcfunction`
+#### 💬 채팅 명령어 감지 예제 (2): `data/chklink/function/example_chat2.mcfunction`
 ```mcfunction
-# 1. 후원 알림 출력
-$tellraw @a [{"text":"[후원!] ","color":"green","bold":true},{"text":"$(sender)","color":"yellow"},{"text":": ", "color":"yellow"},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}," ",{"text":"$(amount)","color":"yellow"},{"text":"원","color":"yellow"}]
+# 2. 특정 채팅 !명령어 감지 (!다이아, !점프)
+$execute if data storage minecraft:chat {cmd:"다이아"} run give $(player_name) diamond 1
+$execute if data storage minecraft:chat {cmd:"점프"} run effect give $(player_name) jump_boost 5 2
+```
 
-# 2. 후원 명령어 감지 및 금액 조건 예시
-# !소환 명령어 + 10,000원 후원
-execute if data storage minecraft:donation {cmd:"소환", amount:10000} as @a at @s run summon creeper ~ ~ ~
+#### 🧀 후원 알림 예제 (1): `data/chklink/function/example_donation.mcfunction`
+```mcfunction
+# 1. 후원 알림 출력 (어느 스트리머 방송의 후원인지 표시)
+$tellraw @a [{"text":"[후원!] ","color":"green","bold":true},{"text":"$(player_name)님 방송에 ","color":"gray"},{"text":"$(sender_nick)","color":"yellow"},{"text":": ", "color":"yellow"},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}," ",{"text":"$(amount)","color":"yellow"},{"text":"원","color":"yellow"}]
+```
+
+#### 🧀 후원 명령어 감지 예제 (2): `data/chklink/function/example_donation2.mcfunction`
+```mcfunction
+# 2. 후원 명령어 감지 및 금액 조건 (!소환 명령어 + 10,000원 후원 시 크리퍼 소환)
+$execute if data storage minecraft:donation {cmd:"소환", amount:10000} as $(player_name) at @s run summon creeper ~ ~ ~
 ```
 
 ---

@@ -6,6 +6,8 @@ import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.UUID;
+
 public class DatapackIntegrationManager {
     private static final Logger LOGGER = LoggerFactory.getLogger("chk-datapack-link/DatapackIntegrationManager");
     private static MinecraftServer currentServer = null;
@@ -29,11 +31,11 @@ public class DatapackIntegrationManager {
                 CommandSourceStack source = currentServer.createCommandSourceStack().withSuppressedOutput();
 
                 // Initialize default minecraft:chat storage
-                String defaultChatNbt = "{cmd:\"\", chat:\"\", sender:\"\", raw_msg:\"\", user_id:\"\", time:0L}";
+                String defaultChatNbt = "{player_name:\"\", player_uuid:\"\", cmd:\"\", chat:\"\", sender_nick:\"\", raw_msg:\"\", sender_id:\"\", time:0L}";
                 currentServer.getCommands().performPrefixedCommand(source, "data merge storage minecraft:chat " + defaultChatNbt);
 
                 // Initialize default minecraft:donation storage
-                String defaultDonationNbt = "{cmd:\"\", chat:\"\", amount:0, sender:\"\", pay_type:\"CHEESE\", raw_msg:\"\", user_id:\"\", time:0L}";
+                String defaultDonationNbt = "{player_name:\"\", player_uuid:\"\", cmd:\"\", chat:\"\", amount:0, sender_nick:\"\", pay_type:\"CHEESE\", raw_msg:\"\", sender_id:\"\", time:0L}";
                 currentServer.getCommands().performPrefixedCommand(source, "data merge storage minecraft:donation " + defaultDonationNbt);
 
                 LOGGER.info("Initialized default storages for minecraft:chat and minecraft:donation");
@@ -53,7 +55,7 @@ public class DatapackIntegrationManager {
         return "\"" + escaped + "\"";
     }
 
-    public static void handleChat(ChzzkMessageProcessor.ChatData chatData) {
+    public static void handleChat(UUID playerUuid, String playerName, ChzzkMessageProcessor.ChatData chatData) {
         if (currentServer == null) {
             LOGGER.warn("Received chat but MinecraftServer is not available yet.");
             return;
@@ -64,7 +66,9 @@ public class DatapackIntegrationManager {
                 CommandSourceStack source = currentServer.createCommandSourceStack().withSuppressedOutput();
 
                 String nbtString = String.format(
-                        "{cmd:%s, chat:%s, sender:%s, raw_msg:%s, user_id:%s, time:%dL}",
+                        "{player_name:%s, player_uuid:%s, cmd:%s, chat:%s, sender_nick:%s, raw_msg:%s, sender_id:%s, time:%dL}",
+                        escapeNbtString(playerName != null ? playerName : ""),
+                        escapeNbtString(playerUuid != null ? playerUuid.toString() : ""),
                         escapeNbtString(chatData.cmd()),
                         escapeNbtString(chatData.chat()),
                         escapeNbtString(chatData.nickname()),
@@ -81,14 +85,14 @@ public class DatapackIntegrationManager {
                 String funcCmd = "function #chklink:chat with storage minecraft:chat";
                 currentServer.getCommands().performPrefixedCommand(source, funcCmd);
 
-                LOGGER.info("Successfully updated storage minecraft:chat! NBT: {}", nbtString);
+                LOGGER.info("Updated storage minecraft:chat for player '{}'! NBT: {}", playerName, nbtString);
             } catch (Exception e) {
                 LOGGER.error("Failed to execute chat datapack integration", e);
             }
         });
     }
 
-    public static void handleDonation(ChzzkMessageProcessor.DonationData donationData) {
+    public static void handleDonation(UUID playerUuid, String playerName, ChzzkMessageProcessor.DonationData donationData) {
         if (currentServer == null) {
             LOGGER.warn("Received donation but MinecraftServer is not available yet.");
             return;
@@ -99,7 +103,9 @@ public class DatapackIntegrationManager {
                 CommandSourceStack source = currentServer.createCommandSourceStack().withSuppressedOutput();
 
                 String nbtString = String.format(
-                        "{cmd:%s, chat:%s, amount:%d, sender:%s, pay_type:%s, raw_msg:%s, user_id:%s, time:%dL}",
+                        "{player_name:%s, player_uuid:%s, cmd:%s, chat:%s, amount:%d, sender_nick:%s, pay_type:%s, raw_msg:%s, sender_id:%s, time:%dL}",
+                        escapeNbtString(playerName != null ? playerName : ""),
+                        escapeNbtString(playerUuid != null ? playerUuid.toString() : ""),
                         escapeNbtString(donationData.cmd()),
                         escapeNbtString(donationData.chat()),
                         donationData.amount(),
@@ -118,7 +124,7 @@ public class DatapackIntegrationManager {
                 String funcCmd = "function #chklink:donation with storage minecraft:donation";
                 currentServer.getCommands().performPrefixedCommand(source, funcCmd);
 
-                LOGGER.info("Successfully updated storage minecraft:donation! NBT: {}", nbtString);
+                LOGGER.info("Updated storage minecraft:donation for player '{}'! NBT: {}", playerName, nbtString);
             } catch (Exception e) {
                 LOGGER.error("Failed to execute donation datapack integration", e);
             }

@@ -11,6 +11,9 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
+import java.util.UUID;
 
 public class ChkLinkCommand {
 
@@ -52,7 +55,13 @@ public class ChkLinkCommand {
     private static int executeStatus(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         String channelId = ModConfig.getInstance().getChannelId();
-        boolean connected = ChzzkManager.getInstance().isConnected();
+
+        UUID playerUuid = ChzzkManager.DEFAULT_SERVER_UUID;
+        if (source.getEntity() instanceof ServerPlayer player) {
+            playerUuid = player.getUUID();
+        }
+
+        boolean connected = ChzzkManager.getInstance().isConnected(playerUuid);
 
         source.sendSuccess(() -> Component.translatable("command.chk-datapack-link.status.title"), false);
         source.sendSuccess(() -> Component.translatable("command.chk-datapack-link.status.channel_id", channelId.isEmpty() ? Component.translatable("command.chk-datapack-link.status.none") : channelId), false);
@@ -63,6 +72,13 @@ public class ChkLinkCommand {
     private static int executeTestChat(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         String message = StringArgumentType.getString(context, "message");
+
+        UUID playerUuid = ChzzkManager.DEFAULT_SERVER_UUID;
+        String playerName = "Server";
+        if (source.getEntity() instanceof ServerPlayer player) {
+            playerUuid = player.getUUID();
+            playerName = player.getScoreboardName();
+        }
 
         ChzzkMessageProcessor.ParsedCmdChat parsed = ChzzkMessageProcessor.parseCommandAndChat(message);
         String cleanedRawMsg = ChzzkMessageProcessor.cleanEmojiTokens(message);
@@ -76,7 +92,7 @@ public class ChkLinkCommand {
                 System.currentTimeMillis()
         );
 
-        DatapackIntegrationManager.handleChat(chatData);
+        DatapackIntegrationManager.handleChat(playerUuid, playerName, chatData);
         source.sendSuccess(() -> Component.translatable("command.chk-datapack-link.testchat.success", message), false);
         return 1;
     }
@@ -85,6 +101,13 @@ public class ChkLinkCommand {
         CommandSourceStack source = context.getSource();
         int amount = IntegerArgumentType.getInteger(context, "amount");
         String message = StringArgumentType.getString(context, "message");
+
+        UUID playerUuid = ChzzkManager.DEFAULT_SERVER_UUID;
+        String playerName = "Server";
+        if (source.getEntity() instanceof ServerPlayer player) {
+            playerUuid = player.getUUID();
+            playerName = player.getScoreboardName();
+        }
 
         ChzzkMessageProcessor.ParsedCmdChat parsed = ChzzkMessageProcessor.parseCommandAndChat(message);
         String cleanedRawMsg = ChzzkMessageProcessor.cleanEmojiTokens(message);
@@ -100,7 +123,7 @@ public class ChkLinkCommand {
                 System.currentTimeMillis()
         );
 
-        DatapackIntegrationManager.handleDonation(donationData);
+        DatapackIntegrationManager.handleDonation(playerUuid, playerName, donationData);
         source.sendSuccess(() -> Component.translatable("command.chk-datapack-link.testdonation.success", amount, message), false);
         return 1;
     }
