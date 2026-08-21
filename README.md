@@ -1,8 +1,13 @@
 # 🧀 치지직 데이터팩 링크 (Chzzk Datapack Link)
 
+[![Minecraft](https://img.shields.io/badge/Minecraft-26.2-blue?logo=minecraft)](https://minecraft.net/)
+[![Fabric](https://img.shields.io/badge/Modloader-Fabric-orange?logo=fabric)](https://fabricmc.net/)
+[![AI Assisted](https://img.shields.io/badge/AI-Assisted-8A2BE2?logo=google&logoColor=white)](https://github.com/ga170212/chk-datapack-link)
+[![License](https://img.shields.io/badge/License-CC0--1.0-green)](LICENSE)
+
 네이버 **치지직(Chzzk)** 라이브 방송의 채팅과 후원(치즈, 미션) 이벤트를 마인크래프트 **NBT 스토리지 및 데이터팩과 실시간으로 연동**해주는 패브릭(Fabric) 모드입니다.
 
-> ⚠️ **안내**: 본 모드는 네이버(NAVER)의 공식 모드가 아닌 비공식 오픈소스 서드파티 모드입니다.  
+> ⚠️ **안내**: 본 모드는 네이버(NAVER)의 공식 모드가 아닌 비공식 오픈소스 서드파티 모드이며, AI 코딩 어시스턴트의 지원을 받아 제작되었습니다.  
 > 💡 **필수**: 본 모드는 치지직 이벤트를 마인크래프트 스토리지로 전달하는 **브릿지(Bridge) 모드**이므로, 이벤트를 받아 실행할 **데이터팩이 필수**입니다. 레포지토리에 포함된 **[`example_datapack`](example_datapack)**을 참고하여 적용해 주세요!
 
 ---
@@ -154,6 +159,10 @@ $execute if data storage minecraft:donation {cmd:"소환", amount:10000} as $(pl
 ```
 
 ---
+
+## 크레딧 및 안내 (Credits & AI Disclosure)
+
+- 본 모드는 네이버(NAVER)의 공식 제품이 아니며, **AI 코딩 어시스턴트의 지원을 받아 개발된 오픈소스 비공식 모드**입니다.
 
 ## 📄 라이선스 (License)
 
