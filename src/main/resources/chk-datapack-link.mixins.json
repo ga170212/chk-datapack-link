@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "com.ga170212.chk_datapack_link.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"ExampleMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}

@@ -1,0 +1,33 @@
+{
+  "key.chk-datapack-link.open_gui": "치지직 연동 설정창 열기",
+  "category.chk-datapack-link": "치지직 연동 모드",
+  "key.categories.chk-datapack-link": "치지직 연동 모드",
+  "key.categories.misc": "기타",
+
+  "gui.chk-datapack-link.title": "치지직 연동 설정",
+  "gui.chk-datapack-link.channel_id_hint": "치지직 채널 ID",
+  "gui.chk-datapack-link.save": "채널 ID 저장",
+  "gui.chk-datapack-link.connect": "연동 시작",
+  "gui.chk-datapack-link.disconnect": "연동 해제",
+  "gui.chk-datapack-link.close": "닫기",
+  "gui.chk-datapack-link.saved": "§a채널 ID가 저장되었습니다.",
+  "gui.chk-datapack-link.disconnected": "§c연동이 해제되었습니다.",
+  "gui.chk-datapack-link.connecting": "§e연동을 시도하는 중입니다...",
+  "gui.chk-datapack-link.connect_success": "§a성공적으로 치지직 방송과 연동되었습니다!",
+  "gui.chk-datapack-link.connect_failed": "§c연동 실패: %s",
+
+  "command.chk-datapack-link.status.title": "§e=== [치지직 연동 상태] ===",
+  "command.chk-datapack-link.status.channel_id": "§7설정된 채널 ID: §f%s",
+  "command.chk-datapack-link.status.none": "(없음)",
+  "command.chk-datapack-link.status.connected": "§7연동 상태: §a연동 중",
+  "command.chk-datapack-link.status.disconnected": "§7연동 상태: §c연동 안 됨",
+  "command.chk-datapack-link.testchat.success": "§a[테스트] 가상 채팅을 마인크래프트 스토리지로 전송했습니다: %s",
+  "command.chk-datapack-link.testdonation.success": "§a[테스트] %d원 가상 후원을 전송했습니다: %s",
+
+  "chat.chk-datapack-link.connect_success": "§a[치지직 모드] 성공적으로 치지직 방송 채팅창과 연동되었습니다!",
+  "chat.chk-datapack-link.connect_failed": "§c[치지직 모드] 연동 실패: %s",
+  "chat.chk-datapack-link.disconnect_success": "§c[치지직 모드] 연동이 정상적으로 종료되었습니다.",
+
+  "error.chk-datapack-link.no_channel_id": "설정된 치지직 채널 ID가 없습니다.",
+  "error.chk-datapack-link.already_connected": "이미 연동되어 있습니다."
+}

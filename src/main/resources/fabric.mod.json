@@ -1,0 +1,38 @@
+{
+	"schemaVersion": 1,
+	"id": "chk-datapack-link",
+	"version": "${version}",
+	"name": "chk datapack link",
+	"description": "치지직(Chzzk) 라이브 방송의 채팅과 후원 이벤트를 마인크래프트 스토리지 및 데이터팩과 실시간으로 연동해주는 비공식 모드입니다. (단축키: F6)",
+	"authors": [
+		"ga170212"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/chk-datapack-link/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.ga170212.chk_datapack_link.ChkDatapackLink"
+		],
+		"client": [
+			"com.ga170212.chk_datapack_link.client.ChkDatapackLinkClient"
+		]
+	},
+	"mixins": [
+		"chk-datapack-link.mixins.json",
+		{
+			"config": "chk-datapack-link.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.19.3",
+		"minecraft": "~26.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

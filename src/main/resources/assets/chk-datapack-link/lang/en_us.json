@@ -1,0 +1,33 @@
+{
+  "key.chk-datapack-link.open_gui": "Open Chzzk Link Config",
+  "category.chk-datapack-link": "Chzzk Datapack Link",
+  "key.categories.chk-datapack-link": "Chzzk Datapack Link",
+  "key.categories.misc": "Miscellaneous",
+
+  "gui.chk-datapack-link.title": "Chzzk Link Settings",
+  "gui.chk-datapack-link.channel_id_hint": "Chzzk Channel ID",
+  "gui.chk-datapack-link.save": "Save Channel ID",
+  "gui.chk-datapack-link.connect": "Start Link",
+  "gui.chk-datapack-link.disconnect": "Disconnect",
+  "gui.chk-datapack-link.close": "Close",
+  "gui.chk-datapack-link.saved": "§aChannel ID has been saved.",
+  "gui.chk-datapack-link.disconnected": "§cConnection has been closed.",
+  "gui.chk-datapack-link.connecting": "§eConnecting to Chzzk...",
+  "gui.chk-datapack-link.connect_success": "§aSuccessfully connected to Chzzk stream!",
+  "gui.chk-datapack-link.connect_failed": "§cConnection failed: %s",
+
+  "command.chk-datapack-link.status.title": "§e=== [Chzzk Link Status] ===",
+  "command.chk-datapack-link.status.channel_id": "§7Configured Channel ID: §f%s",
+  "command.chk-datapack-link.status.none": "(None)",
+  "command.chk-datapack-link.status.connected": "§7Status: §aConnected",
+  "command.chk-datapack-link.status.disconnected": "§7Status: §cDisconnected",
+  "command.chk-datapack-link.testchat.success": "§a[Test] Sent simulated chat to Minecraft storage: %s",
+  "command.chk-datapack-link.testdonation.success": "§a[Test] Sent simulated %d KRW donation: %s",
+
+  "chat.chk-datapack-link.connect_success": "§a[Chzzk Mod] Successfully connected to Chzzk stream chat!",
+  "chat.chk-datapack-link.connect_failed": "§c[Chzzk Mod] Connection failed: %s",
+  "chat.chk-datapack-link.disconnect_success": "§c[Chzzk Mod] Connection disconnected safely.",
+
+  "error.chk-datapack-link.no_channel_id": "No Chzzk Channel ID configured.",
+  "error.chk-datapack-link.already_connected": "Already connected to Chzzk."
+}
