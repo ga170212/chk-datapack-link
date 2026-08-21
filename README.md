@@ -8,7 +8,7 @@
 네이버 **치지직(Chzzk)** 라이브 방송의 채팅과 후원(치즈, 미션) 이벤트를 마인크래프트 **NBT 스토리지 및 데이터팩과 실시간으로 연동**해주는 패브릭(Fabric) 모드입니다.
 
 > ⚠️ **안내**: 본 모드는 네이버(NAVER)의 공식 모드가 아닌 비공식 오픈소스 서드파티 모드이며, AI 코딩 어시스턴트의 지원을 받아 제작되었습니다.  
-> 💡 **필수**: 본 모드는 치지직 이벤트를 마인크래프트 스토리지로 전달하는 **브릿지(Bridge) 모드**이므로, 이벤트를 받아 실행할 **데이터팩이 필수**입니다. 레포지토리에 포함된 **[`example_datapack`](example_datapack)**을 참고하여 적용해 주세요!
+> 💡 **필수**: 본 모드는 치지직 이벤트를 마인크래프트 스토리지로 전달하는 **브릿지(Bridge) 모드**이므로, 이벤트를 받아 실행할 **데이터팩이 필수**입니다. 레포지토리의 **[`example_datapacks`](example_datapacks)** 폴더에 모아둔 예시 데이터팩(`chklink_sample` 등)을 참고하여 적용해 주세요!
 
 ---
 
@@ -31,15 +31,15 @@
 - **Minecraft**: 26.2
 - **Mod Loader**: [Fabric Loader](https://fabricmc.net/)
 - **필수 모드**: [Fabric API](https://modrinth.com/mod/fabric-api)
-- **필수 데이터팩**: 치지직 이벤트를 처리할 데이터팩 (기본 제공되는 [`example_datapack`](example_datapack) 사용 권장)
+- **필수 데이터팩**: 치지직 이벤트를 처리할 데이터팩 ([`example_datapacks`](example_datapacks) 내 샘플 데이터팩 참고)
 
 ---
 
 ## 🎮 사용 방법 (How to Use)
 
 ### 1. 데이터팩 적용하기 (필수)
-1. 레포지토리의 **[`example_datapack`](example_datapack)** 폴더를 복사하여 마인크래프트 월드의 `datapacks/` 폴더에 넣습니다.
-   > 경로 예시: `.minecraft/saves/월드이름/datapacks/example_datapack`
+1. 레포지토리의 **[`example_datapacks/chklink_sample`](example_datapacks/chklink_sample)** 폴더(또는 나만의 커스텀 데이터팩)를 마인크래프트 월드의 `datapacks/` 폴더에 복사해 넣습니다.
+   > 경로 예시: `.minecraft/saves/월드이름/datapacks/chklink_sample`
 2. 월드에 접속한 상태라면 채팅창에 `/reload` 명령어를 입력하여 데이터팩을 새로고침합니다.
 
 ### 2. 치지직 채널 ID 확인하기
@@ -69,7 +69,7 @@
 ## 🛠️ 데이터팩 제작자 가이드 (Datapack Integration)
 
 모드는 치지직 이벤트가 발생할 때마다 스토리지에 데이터를 병합한 후, 해당하는 **펑션 태그**를 매크로와 함께 실행합니다.  
-처음 제작하신다면 레포지토리의 **[`example_datapack`](example_datapack)** 구조를 그대로 복사하여 커스텀해 보세요!
+처음 제작하신다면 **[`example_datapacks/chklink_sample`](example_datapacks/chklink_sample)** 구조를 그대로 복사하여 커스텀해 보세요!
 
 ### 1. 펑션 태그 등록하기
 
@@ -160,7 +160,7 @@ $execute if data storage minecraft:donation {cmd:"소환", amount:10000} as $(pl
 
 ---
 
-## 크레딧 및 안내 (Credits & AI Disclosure)
+## 🤖 크레딧 및 안내 (Credits & AI Disclosure)
 
 - 본 모드는 네이버(NAVER)의 공식 제품이 아니며, **AI 코딩 어시스턴트의 지원을 받아 개발된 오픈소스 비공식 모드**입니다.
 
