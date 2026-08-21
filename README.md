@@ -130,7 +130,7 @@ $tellraw @a [{"text":"[후원!] ","color":"green","bold":true},{"text":"$(sender
 
 # 2. 후원 명령어 감지 및 금액 조건 예시
 # !소환 명령어 + 10,000원 후원
-execute if data storage minecraft:donation {cmd:"소환", amount:10000} run summon creeper ~ ~ ~
+execute if data storage minecraft:donation {cmd:"소환", amount:10000} as @a at @s run summon creeper ~ ~ ~
 
 ```
 

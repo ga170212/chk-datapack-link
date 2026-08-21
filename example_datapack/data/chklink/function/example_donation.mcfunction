@@ -1,0 +1,1 @@
+$tellraw @a [{"text":"[후원!] ","color":"green","bold":true},{"text":"$(sender)","color":"yellow"},{"text":": ", "color":"yellow"},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}," ",{"text":"$(amount)","color":"yellow"},{"text":"원","color":"yellow"}]
