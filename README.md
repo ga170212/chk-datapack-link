@@ -104,11 +104,22 @@
 {
   player_name: "플레이어닉네임", // 방송 연동을 켠 마인크래프트 플레이어 이름
   player_uuid: "12345678-...", // 마인크래프트 플레이어 UUID
-  cmd: "투표",                // !명령어 명칭 (예: !투표 강아지 -> "투표")
-  chat: "강아지",              // 실제 메시지 내용 (명령어 제외 텍스트)
+  cmd: "설치",                // !명령어 명칭 (예: !설치 sand, 10, 20 -> "설치")
+  chat: "sand, 10, 20",       // 명령어 제외 전체 본문
+  
+  // ✨ 쉼표(,) 구분 인자 필드 (0부터 시작)
+  args: ["sand", "10", "20"], // 인자 전체 NBT 문자열 리스트
+  arg0: "sand",               // 0번째 인자
+  arg1: "10",                 // 1번째 인자
+  arg2: "20",                 // 2번째 인자
+  arg3: "",                   // (없으면 빈 문자열)
+  arg4: "",
+  arg5: "",
+  arg_count: 3,               // 총 인자 개수
+  
   sender_nick: "시청자닉네임",  // 치지직 시청자(보낸 사람) 닉네임
   sender_id: "a1b2c3...",     // 치지직 시청자 고유 ID 해시값
-  raw_msg: "!투표 강아지",      // 원본 전체 메시지
+  raw_msg: "!설치 sand, 10, 20",// 원본 전체 메시지
   time: 1724123456789L        // 메시지 타임스탬프 (밀리초)
 }
 ```
@@ -119,12 +130,23 @@
   player_name: "플레이어닉네임", // 방송 연동을 켠 마인크래프트 플레이어 이름
   player_uuid: "12345678-...", // 마인크래프트 플레이어 UUID
   cmd: "미션",                // !명령어 명칭
-  chat: "다이아 10개 캐기",     // 후원 메시지 내용
+  chat: "다이아, 10",         // 후원 메시지 내용
   amount: 10000,              // 후원 금액 (치즈 개수 / 원)
+  
+  // ✨ 쉼표(,) 구분 인자 필드 (0부터 시작)
+  args: ["다이아", "10"],
+  arg0: "다이아",
+  arg1: "10",
+  arg2: "",
+  arg3: "",
+  arg4: "",
+  arg5: "",
+  arg_count: 2,
+  
   sender_nick: "후원자닉네임",  // 후원자 닉네임
   sender_id: "a1b2c3...",     // 치지직 후원자 고유 ID 해시값
   pay_type: "CHEESE",         // 결제 타입 (CHEESE 등)
-  raw_msg: "!미션 다이아 10개 캐기",
+  raw_msg: "!미션 다이아, 10",
   time: 1724123456789L
 }
 ```
@@ -139,9 +161,13 @@
 $tellraw @a [{"text":"$(sender_nick)","color":"yellow"},{"text":": "},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}]
 ```
 
-#### 💬 채팅 명령어 감지 예제 (2): `data/chklink/function/example_chat2.mcfunction`
+#### 💬 채팅 인자 기반 명령어 예제 (2): `data/chklink/function/example_chat2.mcfunction`
 ```mcfunction
-# 2. 특정 채팅 !명령어 감지 (!다이아, !점프)
+# 2. 쉼표(,) 구분 인자를 활용한 블록 설치 (!설치 sand, 10, 20)
+# 해당 플레이어(@s)의 위치를 기준으로 상대 좌표에 $(arg0) 블록 설치!
+$execute if data storage minecraft:chat {cmd:"설치"} as $(player_name) at @s run setblock ~$(arg1) ~ ~$(arg2) $(arg0)
+
+# 3. 특정 단일 채팅 !명령어 감지 (!다이아, !점프)
 $execute if data storage minecraft:chat {cmd:"다이아"} run give $(player_name) diamond 1
 $execute if data storage minecraft:chat {cmd:"점프"} run effect give $(player_name) jump_boost 5 2
 ```

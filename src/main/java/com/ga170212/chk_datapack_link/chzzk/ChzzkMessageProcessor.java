@@ -13,7 +13,7 @@ public class ChzzkMessageProcessor {
     private static final Logger LOGGER = LoggerFactory.getLogger("chk-datapack-link/ChzzkMessageProcessor");
     private static final Pattern EMOJI_PATTERN = Pattern.compile("\\{:[^\\}:]+:\\}");
 
-    public record ParsedCmdChat(String cmd, String chat) {}
+    public record ParsedCmdChat(String cmd, String chat, java.util.List<String> args) {}
 
     public record ChatData(
             String nickname,
@@ -21,6 +21,7 @@ public class ChzzkMessageProcessor {
             String rawMessage,
             String cmd,
             String chat,
+            java.util.List<String> args,
             long msgTime
     ) {}
 
@@ -32,6 +33,7 @@ public class ChzzkMessageProcessor {
             String rawMessage,
             String cmd,
             String chat,
+            java.util.List<String> args,
             long msgTime
     ) {}
 
@@ -49,25 +51,38 @@ public class ChzzkMessageProcessor {
     }
 
     /**
-     * 입력 메시지에서 !명령어와 일반 채팅을 분리합니다.
+     * 입력 메시지에서 !명령어와 본문(chat), 그리고 쉼표(,) 구분 인자 목록(args)을 분리합니다.
+     * !가 없더라도 쉼표(,)가 있으면 항상 args 목록(arg0, arg1, ...)으로 분할됩니다.
      */
     public static ParsedCmdChat parseCommandAndChat(String message) {
         if (message == null || message.trim().isEmpty()) {
-            return new ParsedCmdChat("", "");
+            return new ParsedCmdChat("", "", java.util.Collections.emptyList());
         }
         String trimmed = message.trim();
+        String cmd = "";
+        String chat = "";
+
         if (trimmed.startsWith("!")) {
             String withoutExclamation = trimmed.substring(1).trim();
             if (withoutExclamation.isEmpty()) {
-                return new ParsedCmdChat("", "");
+                return new ParsedCmdChat("", "", java.util.Collections.emptyList());
             }
             String[] parts = withoutExclamation.split("\\s+", 2);
-            String cmd = parts[0];
-            String chat = parts.length > 1 ? cleanEmojiTokens(parts[1]) : "";
-            return new ParsedCmdChat(cmd, chat);
+            cmd = parts[0];
+            chat = parts.length > 1 ? cleanEmojiTokens(parts[1]) : "";
         } else {
-            return new ParsedCmdChat("", cleanEmojiTokens(trimmed));
+            chat = cleanEmojiTokens(trimmed);
         }
+
+        java.util.List<String> argsList = new java.util.ArrayList<>();
+        if (!chat.isEmpty()) {
+            String[] splitArgs = chat.split(",");
+            for (String arg : splitArgs) {
+                argsList.add(arg.trim());
+            }
+        }
+
+        return new ParsedCmdChat(cmd, chat, argsList);
     }
 
     /**
@@ -144,9 +159,10 @@ public class ChzzkMessageProcessor {
                                 cleanedRawMsg,
                                 parsed.cmd(),
                                 parsed.chat(),
+                                parsed.args(),
                                 msgTime
                         );
-                        LOGGER.info("Donation -> Nickname: {}, Amount: {}, Cmd: '{}', Chat: '{}'", nickname, amount, parsed.cmd(), parsed.chat());
+                        LOGGER.info("Donation -> Nickname: {}, Amount: {}, Cmd: '{}', Args: {}", nickname, amount, parsed.cmd(), parsed.args());
                         handler.onDonationReceived(donationData);
 
                     // 2. 일반 채팅 수신 (msgTypeCode 10001)
@@ -157,9 +173,10 @@ public class ChzzkMessageProcessor {
                                 cleanedRawMsg,
                                 parsed.cmd(),
                                 parsed.chat(),
+                                parsed.args(),
                                 msgTime
                         );
-                        LOGGER.info("Chat -> Nickname: {}, Cmd: '{}', Chat: '{}'", nickname, parsed.cmd(), parsed.chat());
+                        LOGGER.info("Chat -> Nickname: {}, Cmd: '{}', Args: {}", nickname, parsed.cmd(), parsed.args());
                         handler.onChatReceived(chatData);
                     }
                 }

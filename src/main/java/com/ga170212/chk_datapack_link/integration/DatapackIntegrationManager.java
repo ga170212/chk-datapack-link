@@ -31,11 +31,11 @@ public class DatapackIntegrationManager {
                 CommandSourceStack source = currentServer.createCommandSourceStack().withSuppressedOutput();
 
                 // Initialize default minecraft:chat storage
-                String defaultChatNbt = "{player_name:\"\", player_uuid:\"\", cmd:\"\", chat:\"\", sender_nick:\"\", raw_msg:\"\", sender_id:\"\", time:0L}";
+                String defaultChatNbt = "{player_name:\"\", player_uuid:\"\", cmd:\"\", chat:\"\", args:[], arg0:\"\", arg1:\"\", arg2:\"\", arg3:\"\", arg4:\"\", arg5:\"\", arg_count:0, sender_nick:\"\", raw_msg:\"\", sender_id:\"\", time:0L}";
                 currentServer.getCommands().performPrefixedCommand(source, "data merge storage minecraft:chat " + defaultChatNbt);
 
                 // Initialize default minecraft:donation storage
-                String defaultDonationNbt = "{player_name:\"\", player_uuid:\"\", cmd:\"\", chat:\"\", amount:0, sender_nick:\"\", pay_type:\"CHEESE\", raw_msg:\"\", sender_id:\"\", time:0L}";
+                String defaultDonationNbt = "{player_name:\"\", player_uuid:\"\", cmd:\"\", chat:\"\", amount:0, args:[], arg0:\"\", arg1:\"\", arg2:\"\", arg3:\"\", arg4:\"\", arg5:\"\", arg_count:0, sender_nick:\"\", pay_type:\"CHEESE\", raw_msg:\"\", sender_id:\"\", time:0L}";
                 currentServer.getCommands().performPrefixedCommand(source, "data merge storage minecraft:donation " + defaultDonationNbt);
 
                 LOGGER.info("Initialized default storages for minecraft:chat and minecraft:donation");
@@ -55,6 +55,24 @@ public class DatapackIntegrationManager {
         return "\"" + escaped + "\"";
     }
 
+    private static String formatArgsNbt(java.util.List<String> args) {
+        if (args == null || args.isEmpty()) return "[]";
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < args.size(); i++) {
+            if (i > 0) sb.append(", ");
+            sb.append(escapeNbtString(args.get(i)));
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    private static String getArgSafe(java.util.List<String> args, int index) {
+        if (args != null && index >= 0 && index < args.size()) {
+            return args.get(index);
+        }
+        return "";
+    }
+
     public static void handleChat(UUID playerUuid, String playerName, ChzzkMessageProcessor.ChatData chatData) {
         if (currentServer == null) {
             LOGGER.warn("Received chat but MinecraftServer is not available yet.");
@@ -64,13 +82,22 @@ public class DatapackIntegrationManager {
         currentServer.execute(() -> {
             try {
                 CommandSourceStack source = currentServer.createCommandSourceStack().withSuppressedOutput();
+                java.util.List<String> args = chatData.args();
 
                 String nbtString = String.format(
-                        "{player_name:%s, player_uuid:%s, cmd:%s, chat:%s, sender_nick:%s, raw_msg:%s, sender_id:%s, time:%dL}",
+                        "{player_name:%s, player_uuid:%s, cmd:%s, chat:%s, args:%s, arg0:%s, arg1:%s, arg2:%s, arg3:%s, arg4:%s, arg5:%s, arg_count:%d, sender_nick:%s, raw_msg:%s, sender_id:%s, time:%dL}",
                         escapeNbtString(playerName != null ? playerName : ""),
                         escapeNbtString(playerUuid != null ? playerUuid.toString() : ""),
                         escapeNbtString(chatData.cmd()),
                         escapeNbtString(chatData.chat()),
+                        formatArgsNbt(args),
+                        escapeNbtString(getArgSafe(args, 0)),
+                        escapeNbtString(getArgSafe(args, 1)),
+                        escapeNbtString(getArgSafe(args, 2)),
+                        escapeNbtString(getArgSafe(args, 3)),
+                        escapeNbtString(getArgSafe(args, 4)),
+                        escapeNbtString(getArgSafe(args, 5)),
+                        args != null ? args.size() : 0,
                         escapeNbtString(chatData.nickname()),
                         escapeNbtString(chatData.rawMessage()),
                         escapeNbtString(chatData.userId()),
@@ -101,14 +128,23 @@ public class DatapackIntegrationManager {
         currentServer.execute(() -> {
             try {
                 CommandSourceStack source = currentServer.createCommandSourceStack().withSuppressedOutput();
+                java.util.List<String> args = donationData.args();
 
                 String nbtString = String.format(
-                        "{player_name:%s, player_uuid:%s, cmd:%s, chat:%s, amount:%d, sender_nick:%s, pay_type:%s, raw_msg:%s, sender_id:%s, time:%dL}",
+                        "{player_name:%s, player_uuid:%s, cmd:%s, chat:%s, amount:%d, args:%s, arg0:%s, arg1:%s, arg2:%s, arg3:%s, arg4:%s, arg5:%s, arg_count:%d, sender_nick:%s, pay_type:%s, raw_msg:%s, sender_id:%s, time:%dL}",
                         escapeNbtString(playerName != null ? playerName : ""),
                         escapeNbtString(playerUuid != null ? playerUuid.toString() : ""),
                         escapeNbtString(donationData.cmd()),
                         escapeNbtString(donationData.chat()),
                         donationData.amount(),
+                        formatArgsNbt(args),
+                        escapeNbtString(getArgSafe(args, 0)),
+                        escapeNbtString(getArgSafe(args, 1)),
+                        escapeNbtString(getArgSafe(args, 2)),
+                        escapeNbtString(getArgSafe(args, 3)),
+                        escapeNbtString(getArgSafe(args, 4)),
+                        escapeNbtString(getArgSafe(args, 5)),
+                        args != null ? args.size() : 0,
                         escapeNbtString(donationData.nickname()),
                         escapeNbtString(donationData.payType()),
                         escapeNbtString(donationData.rawMessage()),

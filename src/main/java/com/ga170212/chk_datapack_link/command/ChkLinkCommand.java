@@ -89,6 +89,7 @@ public class ChkLinkCommand {
                 cleanedRawMsg,
                 parsed.cmd(),
                 parsed.chat(),
+                parsed.args(),
                 System.currentTimeMillis()
         );
 
@@ -120,6 +121,7 @@ public class ChkLinkCommand {
                 cleanedRawMsg,
                 parsed.cmd(),
                 parsed.chat(),
+                parsed.args(),
                 System.currentTimeMillis()
         );
 
