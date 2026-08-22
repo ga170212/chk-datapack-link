@@ -5,24 +5,40 @@
 [![AI Assisted](https://img.shields.io/badge/AI-Assisted-8A2BE2?logo=google&logoColor=white)](https://github.com/ga170212/chk-datapack-link)
 [![License](https://img.shields.io/badge/License-CC0--1.0-green)](LICENSE)
 
-네이버 **치지직(Chzzk)** 라이브 방송의 채팅과 후원(치즈, 미션) 이벤트를 마인크래프트 **NBT 스토리지 및 데이터팩과 실시간으로 연동**해주는 패브릭(Fabric) 모드입니다.
+치지직(Chzzk) 라이브 방송의 채팅과 후원 이벤트를 마인크래프트 **NBT 스토리지 및 데이터팩과 실시간으로 연동**해주는 패브릭(Fabric) 모드입니다.
 
 > ⚠️ **안내**: 본 모드는 네이버(NAVER)의 공식 모드가 아닌 비공식 오픈소스 서드파티 모드이며, AI 코딩 어시스턴트의 지원을 받아 제작되었습니다.  
-> 💡 **필수**: 본 모드는 치지직 이벤트를 마인크래프트 스토리지로 전달하는 **브릿지(Bridge) 모드**이므로, 이벤트를 받아 실행할 **데이터팩이 필수**입니다. 레포지토리의 **[`example_datapacks`](example_datapacks)** 폴더에 모아둔 예시 데이터팩(`chklink_sample` 등)을 참고하여 적용해 주세요!
+> 💡 **필수**: 본 모드는 치지직 이벤트를 마인크래프트 스토리지로 전달하는 **브릿지(Bridge) 모드**이므로, 이벤트를 받아 실행할 **데이터팩이 필요**합니다.
 
 ---
 
-## ✨ 주요 기능 (Features)
+## 🌐 English Overview
 
-- **📡 실시간 웹소켓 연동**: 방송이 켜져 있지 않아도 채팅방 웹소켓(`WSS`)에 연결되어 채팅 및 후원 패킷을 실시간 수신합니다.
-- **📦 NBT 스토리지 자동 저장**: 수신된 데이터를 `minecraft:chat` 및 `minecraft:donation` 스토리지에 즉시 NBT 형태로 저장합니다.
-- **🏷️ 펑션 태그 기반 다중 데이터팩 실행**: 스토리지 갱신 후 `#chklink:chat` 및 `#chklink:donation` 태그에 등록된 모든 데이터팩 펑션을 매크로(`with storage`)로 일괄 실행합니다.
-- **👥 멀티플레이어 개별 세션 지원**: 서버에 접속한 각 플레이어가 본인의 치지직 채널 ID로 각자 연동할 수 있으며, 데이터팩에서 `$(player_name)`으로 대상을 지정할 수 있습니다.
-- **🧹 이모티콘 태그 정제 & !명령어 분리**:
-  - `{:d_108:}` 형태의 치지직 구독 이모티콘 태그 자동 제거
-  - `!투표 강아지` ➔ `cmd: "투표"`, `chat: "강아지"` 자동 분리
-- **🎮 인게임 GUI & 단축키 지원**: `F6` 단축키로 설정창을 열어 채널 ID를 입력하고 연동을 켜고 끌 수 있습니다.
-- **🧪 시뮬레이션 명령어**: 인게임에서 `/chklink testchat` 및 `/chklink testdonation` 명령어로 실제 방송 없이도 데이터팩 연동을 테스트할 수 있습니다.
+A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** chat & donation events directly to Minecraft **NBT storage and datapacks** in real time.
+
+- **Datapack-Driven**: Triggers `#chklink:chat` and `#chklink:donation` function tags with macro storage data when chat or donation events occur.
+- **Smart Parsing**: Automatically parses commands (`cmd`), messages (`chat`), and comma-separated arguments (`arg0`, `arg1`, `arg2`, `arg3`, `arg4`, `arg5`).
+- **Multiplayer Support**: Each player on a server can connect their own Chzzk channel independently.
+- **Mod Menu & Keybinding**: Open the channel configuration GUI easily via **`F6`** or through **Mod Menu**.
+- **In-Game Testing**: Simulate incoming chats and donations using `/chklink testchat` and `/chklink testdonation`.
+
+---
+
+## 📖 개요
+
+치지직 방송의 채팅과 후원을 마인크래프트 데이터팩으로 받아 처리할 수 있게 해주는 모드입니다.
+
+별도의 자바 코딩 없이 데이터팩 펑션(`.mcfunction`)만 작성하면 시청자 참여 콘텐츠(채팅으로 블록 소환, 후원 시 몹 소환, 투표 등)를 바로 구현할 수 있습니다.
+
+## ✨ 주요 기능
+
+- **데이터팩 연동**: 채팅이나 후원이 오면 스토리지에 데이터를 병합하고 `#chklink:chat`, `#chklink:donation` 태그에 등록된 펑션들을 매크로와 함께 자동 실행합니다.
+- **명령어 및 인자 자동 분리**:
+  - `!소환 좀비 3` ➔ `cmd: "소환"`, `chat: "좀비 3"`
+  - `!소환, 좀비, 3` ➔ `cmd: "소환"`, `arg0: "좀비"`, `arg1: "3"`, `arg_count: 2` 자동 제공
+- **멀티플레이 지원**: 서버에 여러 플레이어가 있어도 각자 본인의 치지직 채널 ID로 개별 연동할 수 있습니다.
+- **인게임 설정창 & Mod Menu 연동**: 인게임에서 **`F6`** 키를 누르거나 **Mod Menu**의 모드 목록 설정 버튼을 통해 채널 ID를 입력하고 연동을 켤 수 있습니다.
+- **테스트 명령어**: `/chklink testchat`, `/chklink testdonation` 명령어로 방송을 켜지 않고도 데이터팩 동작을 바로 테스트할 수 있습니다.
 
 ---
 
