@@ -59,11 +59,13 @@ public class ChannelInputScreen extends Screen {
         this.addRenderableWidget(saveButton);
 
         // Connect/Disconnect Toggle Button
+        boolean isInWorld = this.minecraft != null && this.minecraft.level != null;
         boolean isConnected = isCurrentlyConnected();
         this.connectButton = Button.builder(
                 Component.translatable(isConnected ? "gui.chk-datapack-link.disconnect" : "gui.chk-datapack-link.connect"),
                 button -> handleToggleConnect()
         ).bounds(centerX + 5, centerY + 5, 95, 20).build();
+        this.connectButton.active = isInWorld;
         this.addRenderableWidget(this.connectButton);
 
         // Close Button
@@ -75,7 +77,7 @@ public class ChannelInputScreen extends Screen {
         // Status Label Widget
         this.statusLabel = new StringWidget(
                 centerX - 100, centerY + 65, 200, 20,
-                Component.empty(),
+                isInWorld ? Component.empty() : Component.translatable("gui.chk-datapack-link.in_world_only"),
                 this.font
         );
         this.addRenderableWidget(this.statusLabel);
@@ -151,8 +153,10 @@ public class ChannelInputScreen extends Screen {
 
     private void updateButtonText() {
         if (this.connectButton != null) {
+            boolean isInWorld = this.minecraft != null && this.minecraft.level != null;
             boolean isConnected = isCurrentlyConnected();
             this.connectButton.setMessage(Component.translatable(isConnected ? "gui.chk-datapack-link.disconnect" : "gui.chk-datapack-link.connect"));
+            this.connectButton.active = isInWorld;
         }
     }
 

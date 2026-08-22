@@ -20,6 +20,9 @@
 		],
 		"client": [
 			"com.ga170212.chk_datapack_link.client.ChkDatapackLinkClient"
+		],
+		"modmenu": [
+			"com.ga170212.chk_datapack_link.client.compat.ModMenuIntegration"
 		]
 	},
 	"mixins": [

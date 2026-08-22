@@ -15,6 +15,7 @@
   "gui.chk-datapack-link.connecting": "§e연동을 시도하는 중입니다...",
   "gui.chk-datapack-link.connect_success": "§a성공적으로 치지직 방송과 연동되었습니다!",
   "gui.chk-datapack-link.connect_failed": "§c연동 실패: %s",
+  "gui.chk-datapack-link.in_world_only": "§7(월드에 접속한 후 연동을 시작할 수 있습니다)",
 
   "command.chk-datapack-link.status.title": "§e=== [치지직 연동 상태] ===",
   "command.chk-datapack-link.status.channel_id": "§7설정된 채널 ID: §f%s",

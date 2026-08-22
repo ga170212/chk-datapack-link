@@ -15,6 +15,7 @@
   "gui.chk-datapack-link.connecting": "§eConnecting to Chzzk...",
   "gui.chk-datapack-link.connect_success": "§aSuccessfully connected to Chzzk stream!",
   "gui.chk-datapack-link.connect_failed": "§cConnection failed: %s",
+  "gui.chk-datapack-link.in_world_only": "§7(Connect is available after joining a world)",
 
   "command.chk-datapack-link.status.title": "§e=== [Chzzk Link Status] ===",
   "command.chk-datapack-link.status.channel_id": "§7Configured Channel ID: §f%s",
