@@ -21,8 +21,8 @@
   "command.chk-datapack-link.status.none": "(없음)",
   "command.chk-datapack-link.status.connected": "§7연동 상태: §a연동 중",
   "command.chk-datapack-link.status.disconnected": "§7연동 상태: §c연동 안 됨",
-  "command.chk-datapack-link.testchat.success": "§a[테스트] 가상 채팅을 마인크래프트 스토리지로 전송했습니다: %s",
-  "command.chk-datapack-link.testdonation.success": "§a[테스트] %s원 가상 후원을 전송했습니다: %s",
+  "command.chk-datapack-link.testchat.success": "§a[ChkLink] §7테스트 채팅 전송: §f%s",
+  "command.chk-datapack-link.testdonation.success": "§a[ChkLink] §7테스트 후원 전송 §f[%s원]§7: §f%s",
 
   "chat.chk-datapack-link.connect_success": "§a[ChkLink] 성공적으로 치지직 방송 채팅창과 연동되었습니다!",
   "chat.chk-datapack-link.connect_failed": "§c[ChkLink] 연동 실패: %s",

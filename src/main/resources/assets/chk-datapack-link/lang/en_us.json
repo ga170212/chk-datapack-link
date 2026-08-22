@@ -21,8 +21,8 @@
   "command.chk-datapack-link.status.none": "(None)",
   "command.chk-datapack-link.status.connected": "§7Status: §aConnected",
   "command.chk-datapack-link.status.disconnected": "§7Status: §cDisconnected",
-  "command.chk-datapack-link.testchat.success": "§a[Test] Sent simulated chat to Minecraft storage: %s",
-  "command.chk-datapack-link.testdonation.success": "§a[Test] Sent simulated %s KRW donation: %s",
+  "command.chk-datapack-link.testchat.success": "§a[ChkLink] §7Test chat sent: §f%s",
+  "command.chk-datapack-link.testdonation.success": "§a[ChkLink] §7Test donation sent §f[%s KRW]§7: §f%s",
 
   "chat.chk-datapack-link.connect_success": "§a[ChkLink] Successfully connected to Chzzk stream chat!",
   "chat.chk-datapack-link.connect_failed": "§c[ChkLink] Connection failed: %s",
