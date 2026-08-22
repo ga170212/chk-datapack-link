@@ -117,38 +117,26 @@ public class ChannelInputScreen extends Screen {
                     ChzzkManager.DEFAULT_SERVER_UUID,
                     "Player",
                     text,
-                    () -> {
-                        if (Minecraft.getInstance() != null) {
-                            Minecraft.getInstance().execute(() -> {
-                                setStatus(Component.translatable("gui.chk-datapack-link.connect_success"));
-                                if (this.connectButton != null) {
-                                    this.connectButton.active = true;
-                                }
-                                updateButtonText();
-                            });
-                        }
-                    },
-                    (errorMsg) -> {
-                        if (Minecraft.getInstance() != null) {
-                            Minecraft.getInstance().execute(() -> {
-                                setStatus(Component.translatable("gui.chk-datapack-link.connect_failed", errorMsg));
-                                if (this.connectButton != null) {
-                                    this.connectButton.active = true;
-                                }
-                                updateButtonText();
-                            });
-                        }
-                    }
+                    () -> updateConnectionUi(true, Component.translatable("gui.chk-datapack-link.connect_success")),
+                    (errorMsg) -> updateConnectionUi(false, Component.translatable("gui.chk-datapack-link.connect_failed", errorMsg))
             );
         }
     }
 
     public void onServerStatusReceived(boolean connected, Component statusMessage) {
-        if (this.connectButton != null) {
-            this.connectButton.active = true;
+        updateConnectionUi(connected, statusMessage);
+    }
+
+    private void updateConnectionUi(boolean connected, Component statusMessage) {
+        if (Minecraft.getInstance() != null) {
+            Minecraft.getInstance().execute(() -> {
+                if (this.connectButton != null) {
+                    this.connectButton.active = true;
+                }
+                setStatus(statusMessage);
+                updateButtonText();
+            });
         }
-        setStatus(statusMessage);
-        updateButtonText();
     }
 
     private void setStatus(Component message) {

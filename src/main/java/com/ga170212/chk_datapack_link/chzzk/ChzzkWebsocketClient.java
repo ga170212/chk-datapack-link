@@ -12,6 +12,7 @@ import java.net.http.WebSocket;
 import java.time.Duration;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,12 +44,12 @@ public class ChzzkWebsocketClient implements WebSocket.Listener {
 
     public synchronized void connectAsync(Runnable onSuccess, Consumer<String> onError) {
         if (isConnected.get() || isConnecting.get()) {
-            if (onError != null) onError.accept("이미 연결 중이거나 연결되어 있습니다.");
+            if (onError != null) onError.accept(Component.translatable("error.chk-datapack-link.already_connected").getString());
             return;
         }
 
         if (channelId == null || channelId.trim().isEmpty()) {
-            if (onError != null) onError.accept("설정된 치지직 채널 ID가 없습니다.");
+            if (onError != null) onError.accept(Component.translatable("error.chk-datapack-link.no_channel_id").getString());
             return;
         }
 
@@ -217,10 +218,5 @@ public class ChzzkWebsocketClient implements WebSocket.Listener {
     private static String extractJsonValue(String json, String key) {
         Matcher m = Pattern.compile("\"" + key + "\":\\s*\"?([^,\"}]+)\"?").matcher(json);
         return m.find() ? m.group(1) : "";
-    }
-
-    @FunctionalInterface
-    public interface Consumer<T> {
-        void accept(T t);
     }
 }

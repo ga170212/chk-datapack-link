@@ -54,16 +54,21 @@ public class ChkLinkCommand {
         return 1;
     }
 
+    private record TargetPlayer(UUID uuid, String name) {}
+
+    private static TargetPlayer getTargetPlayer(CommandSourceStack source) {
+        if (source.getEntity() instanceof ServerPlayer player) {
+            return new TargetPlayer(player.getUUID(), player.getScoreboardName());
+        }
+        return new TargetPlayer(ChzzkManager.DEFAULT_SERVER_UUID, "Server");
+    }
+
     private static int executeStatus(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         String channelId = ModConfig.getInstance().getChannelId();
+        TargetPlayer target = getTargetPlayer(source);
 
-        UUID playerUuid = ChzzkManager.DEFAULT_SERVER_UUID;
-        if (source.getEntity() instanceof ServerPlayer player) {
-            playerUuid = player.getUUID();
-        }
-
-        boolean connected = ChzzkManager.getInstance().isConnected(playerUuid);
+        boolean connected = ChzzkManager.getInstance().isConnected(target.uuid());
 
         source.sendSuccess(() -> Component.translatable("command.chk-datapack-link.status.title"), false);
         source.sendSuccess(() -> Component.translatable("command.chk-datapack-link.status.channel_id", channelId.isEmpty() ? Component.translatable("command.chk-datapack-link.status.none") : channelId), false);
@@ -118,33 +123,26 @@ public class ChkLinkCommand {
         return root.toString();
     }
 
-    private static int executeTestChat(CommandContext<CommandSourceStack> context) {
-        CommandSourceStack source = context.getSource();
-        String message = StringArgumentType.getString(context, "message");
-
-        UUID playerUuid = ChzzkManager.DEFAULT_SERVER_UUID;
-        String playerName = "Server";
-        if (source.getEntity() instanceof ServerPlayer player) {
-            playerUuid = player.getUUID();
-            playerName = player.getScoreboardName();
-        }
-
-        final UUID finalUuid = playerUuid;
-        final String finalName = playerName;
-
-        String dummyJson = createMockChatJson(message);
+    private static void processMockPacketAndForward(String dummyJson, UUID playerUuid, String playerName) {
         ChzzkMessageProcessor.processPacket(dummyJson, new ChzzkMessageProcessor.MessageHandler() {
             @Override
             public void onChatReceived(ChzzkMessageProcessor.ChatData chatData) {
-                DatapackIntegrationManager.handleChat(finalUuid, finalName, chatData);
+                DatapackIntegrationManager.handleChat(playerUuid, playerName, chatData);
             }
 
             @Override
             public void onDonationReceived(ChzzkMessageProcessor.DonationData donationData) {
-                DatapackIntegrationManager.handleDonation(finalUuid, finalName, donationData);
+                DatapackIntegrationManager.handleDonation(playerUuid, playerName, donationData);
             }
         });
+    }
 
+    private static int executeTestChat(CommandContext<CommandSourceStack> context) {
+        CommandSourceStack source = context.getSource();
+        String message = StringArgumentType.getString(context, "message");
+        TargetPlayer target = getTargetPlayer(source);
+
+        processMockPacketAndForward(createMockChatJson(message), target.uuid(), target.name());
         source.sendSuccess(() -> Component.translatable("command.chk-datapack-link.testchat.success", message), false);
         return 1;
     }
@@ -153,30 +151,9 @@ public class ChkLinkCommand {
         CommandSourceStack source = context.getSource();
         int amount = IntegerArgumentType.getInteger(context, "amount");
         String message = StringArgumentType.getString(context, "message");
+        TargetPlayer target = getTargetPlayer(source);
 
-        UUID playerUuid = ChzzkManager.DEFAULT_SERVER_UUID;
-        String playerName = "Server";
-        if (source.getEntity() instanceof ServerPlayer player) {
-            playerUuid = player.getUUID();
-            playerName = player.getScoreboardName();
-        }
-
-        final UUID finalUuid = playerUuid;
-        final String finalName = playerName;
-
-        String dummyJson = createMockDonationJson(amount, message);
-        ChzzkMessageProcessor.processPacket(dummyJson, new ChzzkMessageProcessor.MessageHandler() {
-            @Override
-            public void onChatReceived(ChzzkMessageProcessor.ChatData chatData) {
-                DatapackIntegrationManager.handleChat(finalUuid, finalName, chatData);
-            }
-
-            @Override
-            public void onDonationReceived(ChzzkMessageProcessor.DonationData donationData) {
-                DatapackIntegrationManager.handleDonation(finalUuid, finalName, donationData);
-            }
-        });
-
+        processMockPacketAndForward(createMockDonationJson(amount, message), target.uuid(), target.name());
         source.sendSuccess(() -> Component.translatable("command.chk-datapack-link.testdonation.success", amount, message), false);
         return 1;
     }

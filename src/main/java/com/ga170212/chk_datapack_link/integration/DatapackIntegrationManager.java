@@ -73,97 +73,74 @@ public class DatapackIntegrationManager {
         return "";
     }
 
-    public static void handleChat(UUID playerUuid, String playerName, ChzzkMessageProcessor.ChatData chatData) {
+    private static String formatArgsFieldsNbt(java.util.List<String> args) {
+        return String.format(
+                "args:%s, arg0:%s, arg1:%s, arg2:%s, arg3:%s, arg4:%s, arg5:%s, arg_count:%d",
+                formatArgsNbt(args),
+                escapeNbtString(getArgSafe(args, 0)),
+                escapeNbtString(getArgSafe(args, 1)),
+                escapeNbtString(getArgSafe(args, 2)),
+                escapeNbtString(getArgSafe(args, 3)),
+                escapeNbtString(getArgSafe(args, 4)),
+                escapeNbtString(getArgSafe(args, 5)),
+                args != null ? args.size() : 0
+        );
+    }
+
+    private static void mergeStorageAndTriggerFunction(String storageName, String nbtString, String functionTag, String playerName) {
         if (currentServer == null) {
-            LOGGER.warn("Received chat but MinecraftServer is not available yet.");
+            LOGGER.warn("Received event for {} but MinecraftServer is not available yet.", storageName);
             return;
         }
 
         currentServer.execute(() -> {
             try {
                 CommandSourceStack source = currentServer.createCommandSourceStack().withSuppressedOutput();
-                java.util.List<String> args = chatData.args();
-
-                String nbtString = String.format(
-                        "{player_name:%s, player_uuid:%s, cmd:%s, chat:%s, args:%s, arg0:%s, arg1:%s, arg2:%s, arg3:%s, arg4:%s, arg5:%s, arg_count:%d, sender_nick:%s, raw_msg:%s, sender_id:%s, time:%dL}",
-                        escapeNbtString(playerName != null ? playerName : ""),
-                        escapeNbtString(playerUuid != null ? playerUuid.toString() : ""),
-                        escapeNbtString(chatData.cmd()),
-                        escapeNbtString(chatData.chat()),
-                        formatArgsNbt(args),
-                        escapeNbtString(getArgSafe(args, 0)),
-                        escapeNbtString(getArgSafe(args, 1)),
-                        escapeNbtString(getArgSafe(args, 2)),
-                        escapeNbtString(getArgSafe(args, 3)),
-                        escapeNbtString(getArgSafe(args, 4)),
-                        escapeNbtString(getArgSafe(args, 5)),
-                        args != null ? args.size() : 0,
-                        escapeNbtString(chatData.nickname()),
-                        escapeNbtString(chatData.rawMessage()),
-                        escapeNbtString(chatData.userId()),
-                        chatData.msgTime()
-                );
 
                 // 1. Storage 업데이트
-                String dataCmd = "data merge storage minecraft:chat " + nbtString;
-                currentServer.getCommands().performPrefixedCommand(source, dataCmd);
+                currentServer.getCommands().performPrefixedCommand(source, "data merge storage " + storageName + " " + nbtString);
 
-                // 2. Datapack Function Tag 실행 (#chklink:chat)
-                String funcCmd = "function #chklink:chat with storage minecraft:chat";
-                currentServer.getCommands().performPrefixedCommand(source, funcCmd);
+                // 2. Datapack Function Tag 실행
+                currentServer.getCommands().performPrefixedCommand(source, "function " + functionTag + " with storage " + storageName);
 
-                LOGGER.info("Updated storage minecraft:chat for player '{}'! NBT: {}", playerName, nbtString);
+                LOGGER.info("Updated storage {} for player '{}'! NBT: {}", storageName, playerName, nbtString);
             } catch (Exception e) {
-                LOGGER.error("Failed to execute chat datapack integration", e);
+                LOGGER.error("Failed to execute datapack integration for " + storageName, e);
             }
         });
     }
 
+    public static void handleChat(UUID playerUuid, String playerName, ChzzkMessageProcessor.ChatData chatData) {
+        String nbtString = String.format(
+                "{player_name:%s, player_uuid:%s, cmd:%s, chat:%s, %s, sender_nick:%s, raw_msg:%s, sender_id:%s, time:%dL}",
+                escapeNbtString(playerName != null ? playerName : ""),
+                escapeNbtString(playerUuid != null ? playerUuid.toString() : ""),
+                escapeNbtString(chatData.cmd()),
+                escapeNbtString(chatData.chat()),
+                formatArgsFieldsNbt(chatData.args()),
+                escapeNbtString(chatData.nickname()),
+                escapeNbtString(chatData.rawMessage()),
+                escapeNbtString(chatData.userId()),
+                chatData.msgTime()
+        );
+        mergeStorageAndTriggerFunction("minecraft:chat", nbtString, "#chklink:chat", playerName);
+    }
+
     public static void handleDonation(UUID playerUuid, String playerName, ChzzkMessageProcessor.DonationData donationData) {
-        if (currentServer == null) {
-            LOGGER.warn("Received donation but MinecraftServer is not available yet.");
-            return;
-        }
-
-        currentServer.execute(() -> {
-            try {
-                CommandSourceStack source = currentServer.createCommandSourceStack().withSuppressedOutput();
-                java.util.List<String> args = donationData.args();
-
-                String nbtString = String.format(
-                        "{player_name:%s, player_uuid:%s, cmd:%s, chat:%s, amount:%d, args:%s, arg0:%s, arg1:%s, arg2:%s, arg3:%s, arg4:%s, arg5:%s, arg_count:%d, sender_nick:%s, pay_type:%s, raw_msg:%s, sender_id:%s, time:%dL}",
-                        escapeNbtString(playerName != null ? playerName : ""),
-                        escapeNbtString(playerUuid != null ? playerUuid.toString() : ""),
-                        escapeNbtString(donationData.cmd()),
-                        escapeNbtString(donationData.chat()),
-                        donationData.amount(),
-                        formatArgsNbt(args),
-                        escapeNbtString(getArgSafe(args, 0)),
-                        escapeNbtString(getArgSafe(args, 1)),
-                        escapeNbtString(getArgSafe(args, 2)),
-                        escapeNbtString(getArgSafe(args, 3)),
-                        escapeNbtString(getArgSafe(args, 4)),
-                        escapeNbtString(getArgSafe(args, 5)),
-                        args != null ? args.size() : 0,
-                        escapeNbtString(donationData.nickname()),
-                        escapeNbtString(donationData.payType()),
-                        escapeNbtString(donationData.rawMessage()),
-                        escapeNbtString(donationData.userId()),
-                        donationData.msgTime()
-                );
-
-                // 1. Storage 업데이트
-                String dataCmd = "data merge storage minecraft:donation " + nbtString;
-                currentServer.getCommands().performPrefixedCommand(source, dataCmd);
-
-                // 2. Datapack Function Tag 실행 (#chklink:donation)
-                String funcCmd = "function #chklink:donation with storage minecraft:donation";
-                currentServer.getCommands().performPrefixedCommand(source, funcCmd);
-
-                LOGGER.info("Updated storage minecraft:donation for player '{}'! NBT: {}", playerName, nbtString);
-            } catch (Exception e) {
-                LOGGER.error("Failed to execute donation datapack integration", e);
-            }
-        });
+        String nbtString = String.format(
+                "{player_name:%s, player_uuid:%s, cmd:%s, chat:%s, amount:%d, %s, sender_nick:%s, pay_type:%s, raw_msg:%s, sender_id:%s, time:%dL}",
+                escapeNbtString(playerName != null ? playerName : ""),
+                escapeNbtString(playerUuid != null ? playerUuid.toString() : ""),
+                escapeNbtString(donationData.cmd()),
+                escapeNbtString(donationData.chat()),
+                donationData.amount(),
+                formatArgsFieldsNbt(donationData.args()),
+                escapeNbtString(donationData.nickname()),
+                escapeNbtString(donationData.payType()),
+                escapeNbtString(donationData.rawMessage()),
+                escapeNbtString(donationData.userId()),
+                donationData.msgTime()
+        );
+        mergeStorageAndTriggerFunction("minecraft:donation", nbtString, "#chklink:donation", playerName);
     }
 }
