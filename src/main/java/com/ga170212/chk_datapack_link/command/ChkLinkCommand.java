@@ -4,6 +4,8 @@ import com.ga170212.chk_datapack_link.chzzk.ChzzkManager;
 import com.ga170212.chk_datapack_link.chzzk.ChzzkMessageProcessor;
 import com.ga170212.chk_datapack_link.config.ModConfig;
 import com.ga170212.chk_datapack_link.integration.DatapackIntegrationManager;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -69,6 +71,53 @@ public class ChkLinkCommand {
         return 1;
     }
 
+    private static String createMockChatJson(String message) {
+        JsonObject root = new JsonObject();
+        root.addProperty("cmd", 93101);
+
+        JsonObject item = new JsonObject();
+        item.addProperty("msg", message != null ? message : "");
+        item.addProperty("msgTypeCode", 10001);
+        item.addProperty("msgTime", System.currentTimeMillis());
+
+        JsonObject profile = new JsonObject();
+        profile.addProperty("nickname", "테스트유저");
+        profile.addProperty("userIdHash", "test_hash");
+        item.addProperty("profile", profile.toString());
+
+        JsonArray bdy = new JsonArray();
+        bdy.add(item);
+        root.add("bdy", bdy);
+
+        return root.toString();
+    }
+
+    private static String createMockDonationJson(int amount, String message) {
+        JsonObject root = new JsonObject();
+        root.addProperty("cmd", 93102);
+
+        JsonObject item = new JsonObject();
+        item.addProperty("msg", message != null ? message : "");
+        item.addProperty("msgTypeCode", 10003);
+        item.addProperty("msgTime", System.currentTimeMillis());
+
+        JsonObject profile = new JsonObject();
+        profile.addProperty("nickname", "테스트후원자");
+        profile.addProperty("userIdHash", "test_hash");
+        item.addProperty("profile", profile.toString());
+
+        JsonObject extras = new JsonObject();
+        extras.addProperty("payAmount", amount);
+        extras.addProperty("payType", "CHEESE");
+        item.addProperty("extras", extras.toString());
+
+        JsonArray bdy = new JsonArray();
+        bdy.add(item);
+        root.add("bdy", bdy);
+
+        return root.toString();
+    }
+
     private static int executeTestChat(CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         String message = StringArgumentType.getString(context, "message");
@@ -80,20 +129,22 @@ public class ChkLinkCommand {
             playerName = player.getScoreboardName();
         }
 
-        ChzzkMessageProcessor.ParsedCmdChat parsed = ChzzkMessageProcessor.parseCommandAndChat(message);
-        String cleanedRawMsg = ChzzkMessageProcessor.cleanEmojiTokens(message);
+        final UUID finalUuid = playerUuid;
+        final String finalName = playerName;
 
-        ChzzkMessageProcessor.ChatData chatData = new ChzzkMessageProcessor.ChatData(
-                "테스트유저",
-                "test_hash",
-                cleanedRawMsg,
-                parsed.cmd(),
-                parsed.chat(),
-                parsed.args(),
-                System.currentTimeMillis()
-        );
+        String dummyJson = createMockChatJson(message);
+        ChzzkMessageProcessor.processPacket(dummyJson, new ChzzkMessageProcessor.MessageHandler() {
+            @Override
+            public void onChatReceived(ChzzkMessageProcessor.ChatData chatData) {
+                DatapackIntegrationManager.handleChat(finalUuid, finalName, chatData);
+            }
 
-        DatapackIntegrationManager.handleChat(playerUuid, playerName, chatData);
+            @Override
+            public void onDonationReceived(ChzzkMessageProcessor.DonationData donationData) {
+                DatapackIntegrationManager.handleDonation(finalUuid, finalName, donationData);
+            }
+        });
+
         source.sendSuccess(() -> Component.translatable("command.chk-datapack-link.testchat.success", message), false);
         return 1;
     }
@@ -110,22 +161,22 @@ public class ChkLinkCommand {
             playerName = player.getScoreboardName();
         }
 
-        ChzzkMessageProcessor.ParsedCmdChat parsed = ChzzkMessageProcessor.parseCommandAndChat(message);
-        String cleanedRawMsg = ChzzkMessageProcessor.cleanEmojiTokens(message);
+        final UUID finalUuid = playerUuid;
+        final String finalName = playerName;
 
-        ChzzkMessageProcessor.DonationData donationData = new ChzzkMessageProcessor.DonationData(
-                "테스트후원자",
-                "test_hash",
-                amount,
-                "CHEESE",
-                cleanedRawMsg,
-                parsed.cmd(),
-                parsed.chat(),
-                parsed.args(),
-                System.currentTimeMillis()
-        );
+        String dummyJson = createMockDonationJson(amount, message);
+        ChzzkMessageProcessor.processPacket(dummyJson, new ChzzkMessageProcessor.MessageHandler() {
+            @Override
+            public void onChatReceived(ChzzkMessageProcessor.ChatData chatData) {
+                DatapackIntegrationManager.handleChat(finalUuid, finalName, chatData);
+            }
 
-        DatapackIntegrationManager.handleDonation(playerUuid, playerName, donationData);
+            @Override
+            public void onDonationReceived(ChzzkMessageProcessor.DonationData donationData) {
+                DatapackIntegrationManager.handleDonation(finalUuid, finalName, donationData);
+            }
+        });
+
         source.sendSuccess(() -> Component.translatable("command.chk-datapack-link.testdonation.success", amount, message), false);
         return 1;
     }
