@@ -1,0 +1,3 @@
+execute as @a[scores={blocks_per_chat=1..6}] run execute store result score .blocks_per_chat cbr_math run scoreboard players get @s blocks_per_chat
+execute as @a[scores={blocks_per_chat=7..}] run scoreboard players set .blocks_per_chat cbr_math 6
+execute as @a[scores={blocks_per_chat=1..}] run tellraw @a [{"color":white,"text":""},"채팅당 소환되는 블록의 수는 이제 ",{"color":"aqua","score":{"name":".blocks_per_chat","objective":"cbr_math"}},"개 입니다 (기본 2개)"]

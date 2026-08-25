@@ -1,0 +1,23 @@
+
+# 1. 모래 (기본 낙하 블록 / 자주 발생 - 초당 약 1.0회)
+execute if predicate {"condition":"minecraft:random_chance","chance":0.05} as @p at @s run chklink testchat !블록소환 모래
+# 2. 자갈 (기본 낙하 블록 / 자주 발생 - 초당 약 0.8회)
+execute if predicate {"condition":"minecraft:random_chance","chance":0.04} as @p at @s run chklink testchat !블록소환 자갈
+# 3. 흙 (일반 블록 - 초당 약 0.6회)
+execute if predicate {"condition":"minecraft:random_chance","chance":0.03} as @p at @s run chklink testchat !블록소환 흙
+# 4. 조약돌 (일반 블록 - 초당 약 0.6회)
+execute if predicate {"condition":"minecraft:random_chance","chance":0.03} as @p at @s run chklink testchat !블록소환 조약돌
+# 5. 참나무원목 (일반 블록 - 초당 약 0.4회)
+execute if predicate {"condition":"minecraft:random_chance","chance":0.02} as @p at @s run chklink testchat !블록소환 참나무원목
+# 6. 철블록 (광물 블록 - 초당 약 0.3회)
+execute if predicate {"condition":"minecraft:random_chance","chance":0.015} as @p at @s run chklink testchat !블록소환 철블록
+# 7. 금블록 (광물 블록 - 초당 약 0.2회)
+execute if predicate {"condition":"minecraft:random_chance","chance":0.01} as @p at @s run chklink testchat !블록소환 금블록
+# 8. TNT (위험 블록 - 초당 약 0.2회)
+execute if predicate {"condition":"minecraft:random_chance","chance":0.01} as @p at @s run chklink testchat !블록소환 TNT
+# 9. 다이아몬드블록 (희귀 광물 - 초당 약 0.1회)
+execute if predicate {"condition":"minecraft:random_chance","chance":0.005} as @p at @s run chklink testchat !블록소환 다이아몬드블록
+# 10. 네더라이트블록 (최고 희귀 - 초당 약 0.04회)
+execute if predicate {"condition":"minecraft:random_chance","chance":0.002} as @p at @s run chklink testchat !블록소환 네더라이트블록
+
+schedule function chat_block_rain:test_chat 1t
