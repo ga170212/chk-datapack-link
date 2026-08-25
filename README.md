@@ -49,14 +49,14 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 - **Minecraft**: 26.2
 - **Mod Loader**: [Fabric Loader](https://fabricmc.net/)
 - **필수 모드**: [Fabric API](https://modrinth.com/mod/fabric-api)
-- **필수 데이터팩**: 치지직 이벤트를 처리할 데이터팩
+- **필수 데이터팩**: 치지직 이벤트를 처리할 데이터팩 ([`example_datapacks`](example_datapacks) 내 샘플 데이터팩 참고)
 
 ---
 
 ## 🎮 사용 방법
 
 **1. 데이터팩 적용하기 (필수)**
-- 사용하실 데이터팩을 마인크래프트 월드의 `datapacks/` 폴더에 넣고 월드 내에서 `/reload`를 입력합니다.
+- 레포지토리의 **[`example_datapacks/chklink_sample`](example_datapacks/chklink_sample)** 폴더(또는 나만의 커스텀 데이터팩)를 마인크래프트 월드의 `datapacks/` 폴더에 넣고 월드 내에서 `/reload`를 입력합니다.
 
 **2. 치지직 채널 ID 확인하기**
 - 치지직 스트리머의 방송국 URL 주소에서 채널 ID(32자리 해시값)를 복사합니다.  
@@ -82,7 +82,8 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 
 ## 🛠️ 데이터팩 가이드
 
-모드는 치지직 이벤트가 발생할 때마다 스토리지에 데이터를 병합한 후, 해당하는 **펑션 태그**를 매크로와 함께 실행합니다.
+모드는 치지직 이벤트가 발생할 때마다 스토리지에 데이터를 병합한 후, 해당하는 **펑션 태그**를 매크로와 함께 실행합니다.  
+처음 제작하신다면 **[`example_datapacks/chklink_sample`](example_datapacks/chklink_sample)** 구조를 참고하여 제작해 보세요!
 
 **1. 펑션 태그 등록하기**
 
