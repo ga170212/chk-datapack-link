@@ -30,6 +30,8 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 
 별도의 자바 코딩 없이 데이터팩 펑션(`.mcfunction`)만 작성하면 시청자 참여 콘텐츠(채팅으로 블록 소환, 후원 시 몹 소환, 투표 등)를 바로 구현할 수 있습니다.
 
+---
+
 ## ✨ 주요 기능
 
 - **데이터팩 연동**: 채팅이나 후원이 오면 스토리지에 데이터를 병합하고 `#chklink:chat`, `#chklink:donation` 태그에 등록된 펑션들을 매크로와 함께 자동 실행합니다.
@@ -42,31 +44,27 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 
 ---
 
-## 📋 요구 사항 (Requirements)
+## 📋 요구 사항
 
 - **Minecraft**: 26.2
 - **Mod Loader**: [Fabric Loader](https://fabricmc.net/)
 - **필수 모드**: [Fabric API](https://modrinth.com/mod/fabric-api)
-- **필수 데이터팩**: 치지직 이벤트를 처리할 데이터팩 ([`example_datapacks`](example_datapacks) 내 샘플 데이터팩 참고)
+- **필수 데이터팩**: 치지직 이벤트를 처리할 데이터팩
 
 ---
 
-## 🎮 사용 방법 (How to Use)
+## 🎮 사용 방법
 
-### 1. 데이터팩 적용하기 (필수)
-1. 레포지토리의 **[`example_datapacks/chklink_sample`](example_datapacks/chklink_sample)** 폴더(또는 나만의 커스텀 데이터팩)를 마인크래프트 월드의 `datapacks/` 폴더에 복사해 넣습니다.
-   > 경로 예시: `.minecraft/saves/월드이름/datapacks/chklink_sample`
-2. 월드에 접속한 상태라면 채팅창에 `/reload` 명령어를 입력하여 데이터팩을 새로고침합니다.
+**1. 데이터팩 적용하기 (필수)**
+- 사용하실 데이터팩을 마인크래프트 월드의 `datapacks/` 폴더에 넣고 월드 내에서 `/reload`를 입력합니다.
 
-### 2. 치지직 채널 ID 확인하기
-치지직 스트리머의 방송국 URL 주소에서 채널 ID(32자리 해시값)를 복사합니다:
-> 예: `https://chzzk.naver.com/live/0123456789abcdef0123456789abcdef`  
-> ➔ 채널 ID: **`0123456789abcdef0123456789abcdef`**
+**2. 치지직 채널 ID 확인하기**
+- 치지직 스트리머의 방송국 URL 주소에서 채널 ID(32자리 해시값)를 복사합니다.  
+  *(예: `https://chzzk.naver.com/live/0123456789abcdef0123456789abcdef` ➔ `0123456789abcdef0123456789abcdef`)*
 
-### 3. 인게임에서 연동하기
-1. 게임 내에서 **`F6`** 키를 눌러 치지직 연동 설정창을 엽니다.
-2. 복사한 **채널 ID**를 입력하고 **[채널 ID 저장]**을 누릅니다.
-3. **[연동 시작]** 버튼을 클릭하면 실시간 방송 채팅과 연동됩니다!
+**3. 인게임에서 연동하기**
+- 게임 내에서 **`F6`** 키(또는 Mod Menu 설정)를 눌러 설정창을 엽니다.
+- 복사한 **채널 ID**를 입력하고 **[채널 ID 저장]**을 누른 뒤 **[연동 시작]**을 클릭합니다.
 
 ---
 
@@ -82,16 +80,13 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 
 ---
 
-## 🛠️ 데이터팩 제작자 가이드 (Datapack Integration)
+## 🛠️ 데이터팩 가이드
 
-모드는 치지직 이벤트가 발생할 때마다 스토리지에 데이터를 병합한 후, 해당하는 **펑션 태그**를 매크로와 함께 실행합니다.  
-처음 제작하신다면 **[`example_datapacks/chklink_sample`](example_datapacks/chklink_sample)** 구조를 그대로 복사하여 커스텀해 보세요!
+모드는 치지직 이벤트가 발생할 때마다 스토리지에 데이터를 병합한 후, 해당하는 **펑션 태그**를 매크로와 함께 실행합니다.
 
-### 1. 펑션 태그 등록하기
+**1. 펑션 태그 등록하기**
 
-데이터팩 안에 아래 경로로 태그 JSON 파일을 생성하여 실행할 함수들을 등록합니다:
-
-#### 💬 채팅 태그: `data/chklink/tags/function/chat.json`
+💬 **채팅 태그**: `data/chklink/tags/function/chat.json`
 ```json
 {
   "values": [
@@ -101,7 +96,7 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 }
 ```
 
-#### 🧀 후원 태그: `data/chklink/tags/function/donation.json`
+🧀 **후원 태그**: `data/chklink/tags/function/donation.json`
 ```json
 {
   "values": [
@@ -113,9 +108,9 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 
 ---
 
-### 2. 스토리지 NBT 구조 명세
+**2. 스토리지 NBT 구조 명세**
 
-#### 💬 `minecraft:chat` 스토리지
+💬 **`minecraft:chat` 스토리지**
 ```snbt
 {
   player_name: "플레이어닉네임", // 방송 연동을 켠 마인크래프트 플레이어 이름
@@ -123,7 +118,7 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
   cmd: "설치",                // !명령어 명칭 (예: !설치 sand, 10, 20 -> "설치")
   chat: "sand, 10, 20",       // 명령어 제외 전체 본문
   
-  // ✨ 쉼표(,) 구분 인자 필드 (0부터 시작)
+  // 쉼표(,) 구분 인자 필드
   args: ["sand", "10", "20"], // 인자 전체 NBT 문자열 리스트
   arg0: "sand",               // 0번째 인자
   arg1: "10",                 // 1번째 인자
@@ -140,7 +135,7 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 }
 ```
 
-#### 🧀 `minecraft:donation` 스토리지
+🧀 **`minecraft:donation` 스토리지**
 ```snbt
 {
   player_name: "플레이어닉네임", // 방송 연동을 켠 마인크래프트 플레이어 이름
@@ -149,7 +144,7 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
   chat: "다이아, 10",         // 후원 메시지 내용
   amount: 10000,              // 후원 금액 (치즈 개수 / 원)
   
-  // ✨ 쉼표(,) 구분 인자 필드 (0부터 시작)
+  // 쉼표(,) 구분 인자 필드
   args: ["다이아", "10"],
   arg0: "다이아",
   arg1: "10",
@@ -169,40 +164,37 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 
 ---
 
-### 3. 매크로 펑션 작성 예시
+**3. 매크로 펑션 작성 예시**
 
-#### 💬 채팅 예제 (1): `data/chklink/function/example_chat.mcfunction`
+💬 **채팅 출력 예제**: `data/chklink/function/example_chat.mcfunction`
 ```mcfunction
-# 1. 채팅 출력
 $tellraw @a [{"text":"$(sender_nick)","color":"yellow"},{"text":": "},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}]
 ```
 
-#### 💬 채팅 인자 기반 명령어 예제 (2): `data/chklink/function/example_chat2.mcfunction`
+💬 **채팅 인자 기반 명령어 예제**: `data/chklink/function/example_chat2.mcfunction`
 ```mcfunction
-# 2. 쉼표(,) 구분 인자를 활용한 블록 설치 (!설치 sand, 10, 20)
-# 해당 플레이어(@s)의 위치를 기준으로 상대 좌표에 $(arg0) 블록 설치!
+// 쉼표(,) 구분 인자를 활용한 블록 설치 (!설치 sand, 10, 20)
 $execute if data storage minecraft:chat {cmd:"설치"} as $(player_name) at @s run setblock ~$(arg1) ~ ~$(arg2) $(arg0)
 
-# 3. 특정 단일 채팅 !명령어 감지 (!다이아, !점프)
+// 특정 단일 채팅 !명령어 감지 (!다이아, !점프)
 $execute if data storage minecraft:chat {cmd:"다이아"} run give $(player_name) diamond 1
 $execute if data storage minecraft:chat {cmd:"점프"} run effect give $(player_name) jump_boost 5 2
 ```
 
-#### 🧀 후원 알림 예제 (1): `data/chklink/function/example_donation.mcfunction`
+🧀 **후원 알림 예제**: `data/chklink/function/example_donation.mcfunction`
 ```mcfunction
-# 1. 후원 알림 출력 (어느 스트리머 방송의 후원인지 표시)
 $tellraw @a [{"text":"[후원!] ","color":"green","bold":true},{"text":"$(player_name)님 방송에 ","color":"gray"},{"text":"$(sender_nick)","color":"yellow"},{"text":": ", "color":"yellow"},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}," ",{"text":"$(amount)","color":"yellow"},{"text":"원","color":"yellow"}]
 ```
 
-#### 🧀 후원 명령어 감지 예제 (2): `data/chklink/function/example_donation2.mcfunction`
+🧀 **후원 명령어 감지 예제**: `data/chklink/function/example_donation2.mcfunction`
 ```mcfunction
-# 2. 후원 명령어 감지 및 금액 조건 (!소환 명령어 + 10,000원 후원 시 크리퍼 소환)
+// 후원 명령어 감지 및 금액 조건 (!소환 + 10,000원 후원 시 크리퍼 소환)
 $execute if data storage minecraft:donation {cmd:"소환", amount:10000} as $(player_name) at @s run summon creeper ~ ~ ~
 ```
 
 ---
 
-## 🤖 크레딧 및 안내 (Credits & AI Disclosure)
+## 🤖 크레딧 (Credits)
 
 - 본 모드는 네이버(NAVER)의 공식 제품이 아니며, **AI 코딩 어시스턴트의 지원을 받아 개발된 오픈소스 비공식 모드**입니다.
 
