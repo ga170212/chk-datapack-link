@@ -12,13 +12,13 @@ $scoreboard players operation .time_diff cbr_math -= $(sender_id) cbr_sender_coo
     $execute unless score .time_diff cbr_math > .cooltime cbr_math run return run tellraw $(player_name) [{"color":"green","interpret":true,"nbt":"sender_nick","storage":"chat"},{"color":"white","text":"님 쿨타임 중입니다"}]
 # 금지 블럭인지 검사
 data remove storage cbr_dict temp.block
-$data modify storage minecraft:cbr_dict temp.block set from storage minecraft:cbr_dict map.banned_blocks.$(chat)
+$data modify storage minecraft:cbr_dict temp.block set from storage minecraft:cbr_dict map.banned_blocks."$(chat)"
     # 금지 블럭이면 리턴 -- $sender님 $chat은 금지 블럭입니다
     $execute if data storage cbr_dict temp.block run return run tellraw $(player_name) [{"color":"green","interpret":true,"nbt":"sender_nick","storage":"chat"},{"color":"white","text":"님 "},{"color":"dark_red","interpret":true,"nbt":"chat","storage":"chat"},{"color":"white","text":"은 금지 블록입니다"}]
 
 # 있는 블럭인지 검사
 data remove storage cbr_dict temp.block
-$data modify storage minecraft:cbr_dict temp.block set from storage minecraft:cbr_dict map.blocks.$(chat)
+$data modify storage minecraft:cbr_dict temp.block set from storage minecraft:cbr_dict map.blocks."$(chat)"
     # 없는 블럭이면 리턴 -- $sender님 $chat은 없는 블럭입니다
     $execute unless data storage cbr_dict temp.block run return run tellraw $(player_name) [{"color":"green","interpret":true,"nbt":"sender_nick","storage":"chat"},{"color":"white","text":"님 "},{"color":"red","interpret":true,"nbt":"chat","storage":"chat"},{"color":"white","text":"은 없는 블록입니다"}]
 
