@@ -82,8 +82,10 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 
 ## 🛠️ 데이터팩 가이드
 
-모드는 치지직 이벤트가 발생할 때마다 스토리지에 데이터를 병합한 후, 해당하는 **펑션 태그**를 매크로와 함께 실행합니다.  
+모드는 치지직 이벤트가 발생할 때마다 스토리지에 데이터를 병합한 후, 해당하는 **펑션 태그**에 등록된 함수들을 매크로와 함께 실행합니다.  
 처음 제작하신다면 **[`example_datapacks/chklink_sample`](example_datapacks/chklink_sample)** 구조를 참고하여 제작해 보세요!
+
+> 💡 **독립 실행 지원**: 바닐라의 `function #태그`와 달리, 태그에 등록된 특정 펑션에서 에러가 발생하더라도 다음 펑션이 중단되지 않고 정상적으로 끝까지 실행됩니다.
 
 **1. 펑션 태그 등록하기**
 
@@ -167,14 +169,6 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 
 **3. 매크로 펑션 작성 예시**
 
-> ⚠️ **주의 (매크로 구문 에러 방지)**:  
-> 펑션 실행 중 **매크로 구문 에러(Syntax Error)**가 발생하면 해당 펑션뿐만 아니라 **태그에 등록된 그 뒤의 후속 펑션들까지 실행이 중단**됩니다.  
-> 시청자 채팅(`$(chat)`, `$(arg0)`)에는 공백, 특수문자 등 예측할 수 없는 임의의 문자열이 들어올 수 있으므로, **어떤 채팅이 들어와도 펑션에서 문법 에러가 발생하지 않도록 안전하게 작성하는 것이 중요합니다.**  
->
-> *(대표적인 예시)*:
-> - **NBT 경로 조회 시**: 공백/특수문자로 인한 경로 파싱 에러를 막기 위해 `map."$(chat)"` 처럼 **큰따옴표(`"..."`)로 감싸서** 사용
-> - **인자 기반 명령어 실행 시**: 유효하지 않은 인자로 인한 명령어 구문 에러를 막기 위해 **`execute if` 조건 확인 후 서브 펑션으로 분리**하여 호출
-
 💬 **채팅 출력 예제**: `data/chklink/function/example_chat.mcfunction`
 ```mcfunction
 $tellraw @a [{"text":"$(sender_nick)","color":"yellow"},{"text":": "},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}]
@@ -182,18 +176,12 @@ $tellraw @a [{"text":"$(sender_nick)","color":"yellow"},{"text":": "},{"text":"$
 
 💬 **채팅 인자 기반 명령어 예제**: `data/chklink/function/example_chat2.mcfunction`
 ```mcfunction
-// cmd가 "설치"일 때만 서브 펑션을 호출하여 안전하게 블록 설치
-execute if data storage minecraft:chat {cmd:"설치"} run function chklink:do_setblock with storage minecraft:chat
+// 쉼표(,) 구분 인자를 활용한 블록 설치 (!설치 sand, 10, 20)
+$execute if data storage minecraft:chat {cmd:"설치"} as $(player_name) at @s run setblock ~$(arg1) ~ ~$(arg2) $(arg0)
 
 // 특정 단일 채팅 !명령어 감지 (!다이아, !점프)
 $execute if data storage minecraft:chat {cmd:"다이아"} run give $(player_name) diamond 1
 $execute if data storage minecraft:chat {cmd:"점프"} run effect give $(player_name) jump_boost 5 2
-```
-
-💬 **블록 설치 서브 펑션**: `data/chklink/function/do_setblock.mcfunction`
-```mcfunction
-// cmd가 "설치"일 때만 안전하게 호출되어 블록 설치 실행
-$execute as $(player_name) at @s run setblock ~$(arg1) ~ ~$(arg2) $(arg0)
 ```
 
 🧀 **후원 알림 예제**: `data/chklink/function/example_donation.mcfunction`

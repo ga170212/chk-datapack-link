@@ -2,10 +2,13 @@ package com.ga170212.chk_datapack_link.integration;
 
 import com.ga170212.chk_datapack_link.chzzk.ChzzkMessageProcessor;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.functions.CommandFunction;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.UUID;
 
 public class DatapackIntegrationManager {
@@ -100,8 +103,22 @@ public class DatapackIntegrationManager {
                 // 1. Storage 업데이트
                 currentServer.getCommands().performPrefixedCommand(source, "data merge storage " + storageName + " " + nbtString);
 
-                // 2. Datapack Function Tag 실행
-                currentServer.getCommands().performPrefixedCommand(source, "function " + functionTag + " with storage " + storageName);
+                // 2. Datapack Function Tag 내 함수들을 개별 독립 실행 (특정 데이터팩의 구문 에러 격리)
+                String rawTagName = functionTag.startsWith("#") ? functionTag.substring(1) : functionTag;
+                Identifier tagId = Identifier.parse(rawTagName);
+                Collection<CommandFunction<CommandSourceStack>> functions = currentServer.getFunctions().getTag(tagId);
+
+                if (functions != null && !functions.isEmpty()) {
+                    for (CommandFunction<CommandSourceStack> fn : functions) {
+                        try {
+                            currentServer.getCommands().performPrefixedCommand(source, "function " + fn.id() + " with storage " + storageName);
+                        } catch (Exception fnEx) {
+                            LOGGER.warn("Error executing datapack function '{}' from tag {}: {}", fn.id(), functionTag, fnEx.getMessage());
+                        }
+                    }
+                } else {
+                    currentServer.getCommands().performPrefixedCommand(source, "function " + functionTag + " with storage " + storageName);
+                }
 
                 LOGGER.info("Updated storage {} for player '{}'! NBT: {}", storageName, playerName, nbtString);
             } catch (Exception e) {
