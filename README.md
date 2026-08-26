@@ -167,13 +167,20 @@ A Minecraft Fabric bridge mod that connects **Chzzk (NAVER live streaming)** cha
 
 **3. 매크로 펑션 작성 예시**
 
+> ⚠️ **주의 (매크로 구문 에러 방지)**:  
+> 펑션 실행 중 **매크로 구문 에러(Syntax Error)**가 발생하면 해당 펑션뿐만 아니라 **태그에 등록된 그 뒤의 후속 펑션들까지 실행이 중단**됩니다.  
+> 시청자 채팅(`$(chat)`, `$(arg0)`)에는 공백, 특수문자 등 예측할 수 없는 임의의 문자열이 들어올 수 있으므로, **어떤 채팅이 들어와도 펑션에서 문법 에러가 발생하지 않도록 안전하게 작성하는 것이 중요합니다.**  
+>
+> *(대표적인 예시)*:
+> - **NBT 경로 조회 시**: 공백/특수문자로 인한 경로 파싱 에러를 막기 위해 `map."$(chat)"` 처럼 **큰따옴표(`"..."`)로 감싸서** 사용
+> - **인자 기반 명령어 실행 시**: 유효하지 않은 인자로 인한 명령어 구문 에러를 막기 위해 **`execute if` 조건 확인 후 서브 펑션으로 분리**하여 호출
+
 💬 **채팅 출력 예제**: `data/chklink/function/example_chat.mcfunction`
 ```mcfunction
 $tellraw @a [{"text":"$(sender_nick)","color":"yellow"},{"text":": "},{"text":"$(cmd)","color":"aqua"},{"text":"$(chat)","color":"white"}]
 ```
 
 💬 **채팅 인자 기반 명령어 예제**: `data/chklink/function/example_chat2.mcfunction`
-> 💡 **안전 팁**: 잘못된 인자 입력 시 매크로 구문 에러로 인한 실행 중단을 방지하기 위해, 인자 매크로는 `cmd` 검사 후 서브 펑션으로 실행하는 것이 안전합니다.
 ```mcfunction
 // cmd가 "설치"일 때만 서브 펑션을 호출하여 안전하게 블록 설치
 execute if data storage minecraft:chat {cmd:"설치"} run function chklink:do_setblock with storage minecraft:chat
