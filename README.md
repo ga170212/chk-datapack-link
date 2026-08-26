@@ -173,13 +173,20 @@ $tellraw @a [{"text":"$(sender_nick)","color":"yellow"},{"text":": "},{"text":"$
 ```
 
 💬 **채팅 인자 기반 명령어 예제**: `data/chklink/function/example_chat2.mcfunction`
+> 💡 **안전 팁**: 잘못된 인자 입력 시 매크로 구문 에러로 인한 실행 중단을 방지하기 위해, 인자 매크로는 `cmd` 검사 후 서브 펑션으로 실행하는 것이 안전합니다.
 ```mcfunction
-// 쉼표(,) 구분 인자를 활용한 블록 설치 (!설치 sand, 10, 20)
-$execute if data storage minecraft:chat {cmd:"설치"} as $(player_name) at @s run setblock ~$(arg1) ~ ~$(arg2) $(arg0)
+// cmd가 "설치"일 때만 서브 펑션을 호출하여 안전하게 블록 설치
+execute if data storage minecraft:chat {cmd:"설치"} run function chklink:do_setblock with storage minecraft:chat
 
 // 특정 단일 채팅 !명령어 감지 (!다이아, !점프)
 $execute if data storage minecraft:chat {cmd:"다이아"} run give $(player_name) diamond 1
 $execute if data storage minecraft:chat {cmd:"점프"} run effect give $(player_name) jump_boost 5 2
+```
+
+💬 **블록 설치 서브 펑션**: `data/chklink/function/do_setblock.mcfunction`
+```mcfunction
+// cmd가 "설치"일 때만 안전하게 호출되어 블록 설치 실행
+$execute as $(player_name) at @s run setblock ~$(arg1) ~ ~$(arg2) $(arg0)
 ```
 
 🧀 **후원 알림 예제**: `data/chklink/function/example_donation.mcfunction`
