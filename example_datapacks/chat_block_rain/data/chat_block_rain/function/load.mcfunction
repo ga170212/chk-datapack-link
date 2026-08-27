@@ -3,12 +3,15 @@ scoreboard objectives add cbr_sender_cooltimes dummy
 
 scoreboard objectives add blocks_per_chat trigger
 scoreboard objectives add cooltime trigger
+scoreboard objectives add is_showing_chat trigger
 scoreboard objectives add all_setting trigger
 
 execute unless score .cooltime cbr_math = .cooltime cbr_math \
 run scoreboard players set .cooltime cbr_math 200
 execute unless score .blocks_per_chat cbr_math = .blocks_per_chat cbr_math \
 run scoreboard players set .blocks_per_chat cbr_math 2
+execute unless score .is_showing_chat cbr_math = .is_showing_chat cbr_math \
+run scoreboard players set .is_showing_chat cbr_math 2
 
 scoreboard players set #20 cbr_math 20
 scoreboard players set #10 cbr_math 10
