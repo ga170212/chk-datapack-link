@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chk-datapack-link 공식 문서</title>
+    <title>채팅 블록 소환 지원 블록 목록 (BLOCKS.md)</title>
     <!-- GitHub 공식 마크다운 스타일시트 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown.min.css">
     <!-- 마크다운 렌더러 -->
@@ -25,34 +25,38 @@
             margin: 0 auto;
         }
 
-        /* 상단 네비게이션 바로가기 바 */
-        .top-nav-banner {
-            background-color: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 12px 20px;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        .top-nav-banner a {
-            color: #58a6ff;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 14px;
-        }
-
-        .top-nav-banner a:hover {
-            text-decoration: underline;
-        }
-
+        /* 모든 표의 세로 열 너비를 완벽하게 일치 (세로줄 정렬) */
         .markdown-body table {
             width: 100% !important;
             display: table !important;
+            table-layout: fixed !important;
+            margin-bottom: 24px;
+        }
+
+        /* 3열 테이블 (금지 블록, 주요 블록, 전체 블록) 세로선 완벽 일치 */
+        .markdown-body th:nth-child(1),
+        .markdown-body td:nth-child(1) {
+            width: 32% !important;
+        }
+
+        .markdown-body th:nth-child(2),
+        .markdown-body td:nth-child(2) {
+            width: 32% !important;
+        }
+
+        .markdown-body th:nth-child(3),
+        .markdown-body td:nth-child(3) {
+            width: 36% !important;
+        }
+
+        /* 영문 전용 (2열 테이블) */
+        .markdown-body table:has(th:nth-child(2):last-child) th:nth-child(1),
+        .markdown-body table:has(th:nth-child(2):last-child) td:nth-child(1) {
+            width: 50% !important;
+        }
+        .markdown-body table:has(th:nth-child(2):last-child) th:nth-child(2),
+        .markdown-body table:has(th:nth-child(2):last-child) td:nth-child(2) {
+            width: 50% !important;
         }
 
         @media (max-width: 768px) {
@@ -64,20 +68,13 @@
 </head>
 <body>
 
-    <div class="top-nav-banner">
-        <span>📖 <strong>문서 바로가기</strong></span>
-        <div>
-            <a href="cbr_blocks.html" style="margin-right: 16px;">🌧️ <strong>채팅 블록 소환 지원 목록 (cbr_blocks.html)</strong></a>
-        </div>
-    </div>
-
-    <!-- 루트 README 렌더링 영역 -->
+    <!-- 마크다운 본문 영역 -->
     <article id="content" class="markdown-body">
         <p>문서를 불러오는 중...</p>
     </article>
 
     <script>
-        const MD_URL = 'https://raw.githubusercontent.com/ga170212/chk-datapack-link/main/README.md';
+        const MD_URL = 'https://raw.githubusercontent.com/ga170212/chk-datapack-link/main/example_datapacks/chat_block_rain/BLOCKS.md';
         const contentEl = document.getElementById('content');
 
         async function init() {
@@ -88,7 +85,7 @@
                 mdText = await res.text();
             } catch (e) {
                 try {
-                    const localRes = await fetch('../README.md');
+                    const localRes = await fetch('../example_datapacks/chat_block_rain/BLOCKS.md');
                     mdText = await localRes.text();
                 } catch (err) {
                     contentEl.innerHTML = '<p>문서를 불러오지 못했습니다.</p>';
