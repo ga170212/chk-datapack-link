@@ -9,13 +9,22 @@
     <!-- 마크다운 렌더러 -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
+        :root {
+            --primary-color: #0969da;
+            --primary-hover: #054da7;
+            --success-color: #2da44e;
+            --bg-color: #ffffff;
+            --border-color: #d0d7de;
+        }
+
         body {
             box-sizing: border-box;
             min-width: 200px;
             max-width: 100%;
             margin: 0;
-            padding: 32px 48px;
+            padding: 24px 36px;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", "Pretendard", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
         }
 
         .markdown-body {
@@ -25,57 +34,302 @@
             margin: 0 auto;
         }
 
-        /* 모든 표의 세로 열 너비를 완벽하게 일치 (세로줄 정렬) */
+        /* 상단 네비게이션 및 검색 컨트롤 바 */
+        .sticky-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 12px 0 16px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .nav-links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+
+        .tip-badge {
+            background: #dafbe1;
+            color: #1a7f37;
+            border: 1px solid rgba(27, 31, 36, 0.15);
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .search-box-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 10px 16px 10px 42px;
+            font-size: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.2s ease;
+            background: #ffffff;
+            color: #24292f;
+        }
+
+        .search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            color: #6e7781;
+            font-size: 16px;
+            pointer-events: none;
+        }
+
+        .search-count {
+            font-size: 13px;
+            color: #57606a;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        /* 테이블 레이아웃 및 완벽한 세로줄 정렬 */
         .markdown-body table {
             width: 100% !important;
             display: table !important;
             table-layout: fixed !important;
             margin-bottom: 24px;
+            border-collapse: collapse;
         }
 
-        /* 3열 테이블 (금지 블록, 주요 블록, 전체 블록) 세로선 완벽 일치 */
+        .markdown-body table.hidden,
+        .block-section.hidden,
+        .hidden {
+            display: none !important;
+        }
+
+        /* 3열 테이블 (금지 블록, 주요 블록, 전체 블록) 세로선 100% 일치 */
         .markdown-body th:nth-child(1),
         .markdown-body td:nth-child(1) {
             width: 32% !important;
+            box-sizing: border-box !important;
         }
 
         .markdown-body th:nth-child(2),
         .markdown-body td:nth-child(2) {
             width: 32% !important;
+            box-sizing: border-box !important;
         }
 
         .markdown-body th:nth-child(3),
         .markdown-body td:nth-child(3) {
             width: 36% !important;
+            box-sizing: border-box !important;
         }
 
-        /* 영문 전용 (2열 테이블) */
+        /* 2열 테이블 (영문 전용) */
         .markdown-body table:has(th:nth-child(2):last-child) th:nth-child(1),
         .markdown-body table:has(th:nth-child(2):last-child) td:nth-child(1) {
-            width: 50% !important;
+            width: 45% !important;
         }
         .markdown-body table:has(th:nth-child(2):last-child) th:nth-child(2),
         .markdown-body table:has(th:nth-child(2):last-child) td:nth-child(2) {
-            width: 50% !important;
+            width: 55% !important;
+        }
+
+        /* 명령어 복사 버튼(배지) 스타일 - 모바일/PC 모두 직관적 */
+        .cmd-copy-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 5px 10px;
+            background: #f6f8fa;
+            border: 1px solid #d0d7de;
+            border-radius: 6px;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.15s ease;
+            max-width: 100%;
+            box-sizing: border-box;
+        }
+
+        .cmd-copy-btn code {
+            background: transparent !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            font-size: 13px;
+            color: #24292f;
+            word-break: break-all;
+        }
+
+        .cmd-copy-btn .copy-tag {
+            font-size: 11px;
+            font-weight: 600;
+            color: #57606a;
+            background: #ffffff;
+            border: 1px solid #d0d7de;
+            border-radius: 4px;
+            padding: 2px 6px;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            transition: all 0.15s ease;
+        }
+
+        .cmd-copy-btn:hover {
+            background: #e7f2ff;
+            border-color: var(--primary-color);
+        }
+
+        .cmd-copy-btn:hover code {
+            color: var(--primary-color);
+        }
+
+        .cmd-copy-btn:hover .copy-tag {
+            background: var(--primary-color);
+            color: #ffffff;
+            border-color: var(--primary-color);
+        }
+
+        .cmd-copy-btn:active {
+            transform: scale(0.96);
+            background: #d0e7ff;
+        }
+
+        /* 복사 완료 토스트 팝업 */
+        .toast-container {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #24292f;
+            color: #ffffff;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            pointer-events: none;
+        }
+
+        .toast-container.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast-icon {
+            color: #3fb950;
+        }
+
+        /* 검색 결과 없음 안내 */
+        .no-result-msg {
+            text-align: center;
+            padding: 48px 0;
+            color: #57606a;
+            font-size: 16px;
+            display: none;
         }
 
         @media (max-width: 768px) {
             body {
                 padding: 16px;
             }
+            .search-box-wrapper {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-count {
+                text-align: right;
+            }
+            .nav-links {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 6px;
+            }
         }
     </style>
 </head>
 <body>
+
+    <!-- 상단 고정 검색 및 네비게이션 바 -->
+    <div class="sticky-header">
+        <div class="nav-links">
+            <a href="./index.html">← 공식 문서 홈으로 돌아가기</a>
+            <span class="tip-badge">💡 명령어를 탭(클릭)하면 바로 복사됩니다</span>
+        </div>
+        <div class="search-box-wrapper">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="search-input" placeholder="원하는 블록을 검색하세요 (예: 다이아몬드, 모래, oak_log, tnt...)" autocomplete="off">
+            <span id="searchCount" class="search-count"></span>
+        </div>
+    </div>
 
     <!-- 마크다운 본문 영역 -->
     <article id="content" class="markdown-body">
         <p>문서를 불러오는 중...</p>
     </article>
 
+    <!-- 검색 결과 없음 안내 -->
+    <div id="noResult" class="no-result-msg">
+        <p>🔍 검색 결과가 없습니다. 다른 블록 이름을 검색해 보세요!</p>
+    </div>
+
+    <!-- 복사 완료 토스트 알림 -->
+    <div id="toast" class="toast-container">
+        <span class="toast-icon">✓</span>
+        <span id="toastMessage">명령어가 복사되었습니다!</span>
+    </div>
+
     <script>
         const MD_URL = 'https://raw.githubusercontent.com/ga170212/chk-datapack-link/main/example_datapacks/chat_block_rain/BLOCKS.md';
         const contentEl = document.getElementById('content');
+        const searchInput = document.getElementById('searchInput');
+        const searchCount = document.getElementById('searchCount');
+        const noResult = document.getElementById('noResult');
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+
+        let toastTimer = null;
+
+        function showToast(text) {
+            toastMessage.textContent = `${text} 복사 완료!`;
+            toast.classList.add('show');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
 
         async function init() {
             let mdText = '';
@@ -94,6 +348,158 @@
             }
 
             contentEl.innerHTML = marked.parse(mdText);
+            setupTableFeatures();
+        }
+
+        function setupTableFeatures() {
+            // 마크다운 요소들을 깔끔한 semantic <section> 태그로 재구성하여 래핑
+            const rawChildren = Array.from(contentEl.children);
+            contentEl.innerHTML = '';
+
+            let currentSection = document.createElement('section');
+            currentSection.className = 'block-section';
+            currentSection.setAttribute('data-section-type', 'intro');
+            contentEl.appendChild(currentSection);
+
+            rawChildren.forEach(child => {
+                if (child.tagName === 'H2') {
+                    const text = child.textContent.trim();
+                    let sectionType = 'other';
+                    if (text.includes('금지 블록')) sectionType = 'banned';
+                    else if (text.includes('주요 블록')) sectionType = 'main';
+                    else if (text.includes('전체 블록')) sectionType = 'all';
+
+                    currentSection = document.createElement('section');
+                    currentSection.className = 'block-section';
+                    currentSection.setAttribute('data-section-type', sectionType);
+                    contentEl.appendChild(currentSection);
+                }
+                currentSection.appendChild(child);
+            });
+
+            // 모든 테이블 행 순회하며 명령어 복사 버튼 UI 적용
+            const tables = contentEl.querySelectorAll('table');
+            tables.forEach(table => {
+                const rows = table.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const cells = row.querySelectorAll('td');
+                    if (cells.length >= 3) {
+                        const cmdCell = cells[2];
+                        const cmdText = cmdCell.textContent.trim();
+
+                        if (cmdText.startsWith('!블록소환')) {
+                            // 모바일/PC 모두 클릭 가능함을 한눈에 알 수 있는 버튼형 배지로 변경
+                            cmdCell.innerHTML = `
+                                <div class="cmd-copy-btn" title="클릭하여 '${cmdText}' 복사">
+                                    <code>${cmdText}</code>
+                                    <span class="copy-tag">📋 복사</span>
+                                </div>
+                            `;
+                            cmdCell.querySelector('.cmd-copy-btn').addEventListener('click', (e) => {
+                                e.stopPropagation();
+                                copyToClipboard(cmdText);
+                            });
+                        }
+                    }
+                });
+            });
+
+            // 검색 이벤트 바인딩
+            searchInput.addEventListener('input', handleSearch);
+        }
+
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(text);
+                }).catch(() => {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.focus();
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast(text);
+            } catch (err) {
+                alert('복사에 실패했습니다. 직접 복사해 주세요: ' + text);
+            }
+            document.body.removeChild(textarea);
+        }
+
+        function handleSearch() {
+            const query = searchInput.value.trim().toLowerCase();
+            const sections = contentEl.querySelectorAll('.block-section');
+
+            if (!query) {
+                // 검색어가 없으면 모든 섹션 및 행 기본 표시
+                sections.forEach(sec => sec.classList.remove('hidden'));
+                contentEl.querySelectorAll('tbody tr').forEach(tr => tr.classList.remove('hidden'));
+                searchCount.textContent = '';
+                noResult.style.display = 'none';
+                return;
+            }
+
+            // 필터 검색 모드:
+            // 1. 소개(intro) 및 주요 블록(main) 섹션은 항상 숨김
+            const introSec = contentEl.querySelector('.block-section[data-section-type="intro"]');
+            if (introSec) introSec.classList.add('hidden');
+
+            const mainSec = contentEl.querySelector('.block-section[data-section-type="main"]');
+            if (mainSec) mainSec.classList.add('hidden');
+
+            let totalMatches = 0;
+
+            // 2. 금지 블록(banned) 섹션 필터링
+            const bannedSec = contentEl.querySelector('.block-section[data-section-type="banned"]');
+            if (bannedSec) {
+                let bannedMatches = 0;
+                bannedSec.querySelectorAll('tbody tr').forEach(row => {
+                    const rowText = row.textContent.toLowerCase();
+                    if (rowText.includes(query)) {
+                        row.classList.remove('hidden');
+                        bannedMatches++;
+                        totalMatches++;
+                    } else {
+                        row.classList.add('hidden');
+                    }
+                });
+                // 일치하는 금지 블록이 없으면 섹션 전체 숨김
+                bannedSec.classList.toggle('hidden', bannedMatches === 0);
+            }
+
+            // 3. 전체 블록(all) 섹션 필터링
+            const allSec = contentEl.querySelector('.block-section[data-section-type="all"]');
+            if (allSec) {
+                let allMatches = 0;
+                allSec.querySelectorAll('tbody tr').forEach(row => {
+                    const rowText = row.textContent.toLowerCase();
+                    if (rowText.includes(query)) {
+                        row.classList.remove('hidden');
+                        allMatches++;
+                        totalMatches++;
+                    } else {
+                        row.classList.add('hidden');
+                    }
+                });
+                // 일치하는 블록이 없으면 섹션 숨김
+                allSec.classList.toggle('hidden', allMatches === 0);
+            }
+
+            // 검색 결과 카운트 및 '결과 없음' 상태 표시
+            searchCount.textContent = `${totalMatches}개 블록 찾음`;
+            searchCount.style.color = totalMatches > 0 ? '#0969da' : '#cf222e';
+            noResult.style.display = totalMatches === 0 ? 'block' : 'none';
         }
 
         init();
