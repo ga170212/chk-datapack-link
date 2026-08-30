@@ -91,4 +91,4 @@ as $(player_name) at @s \
 run function chat_block_rain:set_falling_block_pos
 
 # 쿨타임 기록 -- 테스트계정은 쿨타임 비활성화해둠
-$execute unless data storage minecraft:chat {sender_id:"test_hash1"} store result score $(sender_id) cbr_sender_cooltimes run scoreboard players get .current_time cbr_math
+$execute unless data storage minecraft:chat {sender_id:"test_hash"} store result score $(sender_id) cbr_sender_cooltimes run scoreboard players get .current_time cbr_math
