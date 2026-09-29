@@ -1,6 +1,6 @@
 <h1 id="top">🧀 치지직 데이터팩 링크 (Chzzk Datapack Link)</h1>
 
-[![Minecraft](https://img.shields.io/badge/Minecraft-26.2-blue?logo=minecraft)](https://minecraft.net/)
+[![Minecraft](https://img.shields.io/badge/Minecraft-26.2--26.3-blue?logo=minecraft)](https://minecraft.net/)
 [![Fabric](https://img.shields.io/badge/Modloader-Fabric-orange?logo=fabric)](https://fabricmc.net/)
 [![AI Assisted](https://img.shields.io/badge/AI-Assisted-8A2BE2?logo=google&logoColor=white)](https://github.com/ga170212/chk-datapack-link)
 [![License](https://img.shields.io/badge/License-CC0--1.0-green)](https://github.com/ga170212/chk-datapack-link/blob/main/LICENSE)
@@ -36,7 +36,7 @@
 
 ## 📋 요구 사항
 
-- **Minecraft**: 26.2
+- **Minecraft**: 26.2 - 26.3
 - **Mod Loader**: [Fabric Loader](https://fabricmc.net/)
 - **필수 모드**: [Fabric API](https://modrinth.com/mod/fabric-api)
 - **필수 데이터팩**: 치지직 이벤트를 처리할 데이터팩 ([`example_datapacks`](https://github.com/ga170212/chk-datapack-link/tree/main/example_datapacks) 내 샘플 데이터팩 참고)
@@ -227,7 +227,7 @@ Streamers and map creators can easily implement interactive stream events (such 
 
 ## 📋 Requirements
 
-- **Minecraft**: 26.2
+- **Minecraft**: 26.2 - 26.3
 - **Mod Loader**: [Fabric Loader](https://fabricmc.net/)
 - **Required Mod**: [Fabric API](https://modrinth.com/mod/fabric-api)
 - **Required Datapack**: Any datapack designed to handle Chzzk events (see [`example_datapacks`](https://github.com/ga170212/chk-datapack-link/tree/main/example_datapacks) for sample datapacks).
