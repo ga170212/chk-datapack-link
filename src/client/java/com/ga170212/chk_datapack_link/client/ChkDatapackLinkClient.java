@@ -11,7 +11,6 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.network.chat.Component;
-import org.lwjgl.glfw.GLFW;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,8 +35,8 @@ public class ChkDatapackLinkClient implements ClientModInitializer {
         // Register KeyMapping for quick config GUI (Default: F6)
         openConfigKey = KeyMappingHelper.registerKeyMapping(new KeyMapping(
                 "key.chk-datapack-link.open_gui",
-                InputConstants.Type.KEYSYM,
-                GLFW.GLFW_KEY_F6,
+                InputConstants.Type.KEYBOARD,
+                InputConstants.KEY_F6,
                 KeyMapping.Category.MISC
         ));
 
